@@ -1,0 +1,273 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body,
+html {
+  font-family: 'Montserrat', Arial, sans-serif;
+  background: #f5f5f5;
+  height: 100%;
+  color: #333;
+}
+
+/* Contenedor principal */
+.entradas-productos {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header de la app */
+.entradas-header {
+  background: #2c3e50;            /* color de fondo del header */
+  color: #fff;                     /* texto en blanco */
+  padding: 1em;                    /* espacio interno */
+  display: flex;                   /* layout flexible */
+  align-items: center;             /* centrado vertical */
+  justify-content: space-between;  /* espacio entre título y botones */
+}
+
+.entradas-header h1 {
+  font-size: clamp(1.8rem, 4vw, 3rem); /* tamaño responsivo del título */
+}
+
+/* Contenedor de botones del header */
+.header-buttons {
+  display: flex;
+  gap: 0.5em;                     /* espacio entre botones */
+}
+
+/* Estilo de todos los botones del header */
+.header-buttons button {
+  background: #3498db;
+  border: none;
+  padding: 0.5em 1em;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: 'Montserrat', Arial, sans-serif;
+}
+
+/* Efecto hover de los botones del header */
+.header-buttons button:hover {
+  background: #2980b9;            /* cambia el fondo a un azul más oscuro */
+}
+
+/* Layout general */
+.entradas-content {
+  display: flex; /* Cambiado de grid a flex */
+  gap: 1em;
+  flex: 0.6;
+  align-items: stretch; /* Ambos paneles tienen la misma altura */
+  padding: 1em; /* Espacio interno */
+}
+
+/* Panel izquierdo */
+.panel-izquierdo1 {
+  height: 650px; /*Cambia el tamaño*/
+  background: #ffffff;
+  border: 1px solid #ccc;
+  padding: 1em;
+  border-radius: 8px;
+  flex: 2; /* proporcional al derecho */
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  overflow-y: auto; /* scroll si hay muchos elementos */
+}
+
+/* Panel derecho - formulario */
+.panel-derechoEP {
+  height: 379px; /*Cambia el tamaño*/
+  background: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8em;
+  flex: 1; /* proporcional al izquierdo */
+}
+
+/* Lista de productos dentro del panel izquierdo */
+.lista-productos {
+  margin-top: 1em;
+  flex: 1; /* ocupa el espacio disponible vertical */
+  overflow-y: auto;     /* scroll vertical automático */
+  min-height: 0;        /* importante para flexbox para que el scroll funcione correctamente */
+  max-height: 632px;    /* altura máxima */
+}
+
+/* ⭐ Estilo personalizado para el scrollbar (más visible) */
+.lista-productos::-webkit-scrollbar {
+  width: 12px; /* ancho del scrollbar */
+}
+
+.lista-productos::-webkit-scrollbar-track {
+  background: #f1f1f1; /* color del fondo */
+  border-radius: 10px;
+}
+
+.lista-productos::-webkit-scrollbar-thumb {
+  background: #888; /* color de la barra */
+  border-radius: 10px;
+}
+
+.lista-productos::-webkit-scrollbar-thumb:hover {
+  background: #555; /* color al pasar el mouse */
+}
+
+.item-producto {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5em;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.item-producto:hover {
+  background: #dfe6e9;
+}
+
+.item-producto.seleccionado {
+  background: #74b9ff;
+  color: white;
+}
+
+.btn-eliminar {
+  background: #c0392b;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 0.3em 0.5em;
+  cursor: pointer;
+  margin-right: 0.01em;
+}
+
+.formulario label {
+  font-weight: bold;
+  margin-bottom: 0.3em;
+}
+
+.formulario input {
+  padding: 0.5em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 0.5em;
+  width: 100%;
+}
+
+/* Botones */
+.btn-buscar,
+.btn-guardar {
+  padding: 0.5em 0.8em;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+}
+
+
+.btn-buscar {
+  background: #27ae60;
+  margin-right: 0.6em;
+}
+
+.btn-limpiar {
+  background: #e74c3c;
+}
+
+.btn-guardar {
+  background: #0e9236;
+}
+
+/* Resaltado */
+.item-producto.resaltado {
+  background: #74b9ff;
+  color: white;
+}
+
+.producto-categoria {
+  color: #6b7280;
+}
+
+/* Modo oscuro */
+body.dark-mode .entradas-productos {
+  background: #222831;
+  color: #EEEEEE;
+}
+
+body.dark-mode .panel-izquierdo1,
+body.dark-mode .panel-derechoEP {
+  background: #31363F;
+  color: #EEEEEE;
+}
+
+body.dark-mode .item-producto {
+  background: #393E46;
+  color: #EEEEEE;
+  border-radius: 8px;
+  padding: 0.5rem;
+  margin-bottom: 0.25rem;
+  transition: background 0.3s, color 0.3s;
+}
+
+body.dark-mode .item-producto:hover {
+  background: #00ADB522;
+}
+
+body.dark-mode .item-producto.seleccionado {
+  background: #00ADB5;
+  color: #FFFFFF;
+}
+
+body.dark-mode .item-producto.resaltado {
+  background: #FFD36933;
+  color: #FFD369;
+}
+
+body.dark-mode .btn-eliminar,
+body.dark-mode .btn-guardar,
+body.dark-mode .btn-limpiar,
+body.dark-mode .btn-buscar {
+  background: #00ADB522;
+  color: #00ADB5;
+  border: 1px solid #00ADB5;
+}
+
+body.dark-mode .input-busqueda {
+  background: #222831;
+  color: #EEEEEE;
+  border: 1px solid #393E46;
+}
+
+/* Header modo oscuro */
+body.dark-mode .entradas-header {
+  background: #31363F;
+  color: #EEEEEE;
+}
+
+body.dark-mode .header-buttons button {
+  background: #00ADB5;
+  color: #EEEEEE;
+}
+
+body.dark-mode .header-buttons button:hover {
+  background: #00ADB5CC; /* tono más claro al pasar mouse */
+}
+
+/* Responsivo */
+@media (max-width: 900px) {
+  .entradas-content {
+    flex-direction: column;
+  }
+  
+  .header-buttons {
+    flex-wrap: wrap;
+  }
+}

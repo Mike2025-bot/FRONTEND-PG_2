@@ -1,0 +1,379 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html {
+  font-family: 'Montserrat', Arial, sans-serif;
+  background: #f5f5f5;
+  height: 100%;
+  color: #333;
+}
+
+:root {
+  --primary-color: #ffffff;
+  --second-color: #d0d0d0;
+  --black-color: #000000;
+}
+
+body {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+
+a {
+  text-decoration: none;
+  color: var(--second-color);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  
+  /*background-image: url("https://i.postimg.cc/qRk8Qk49/20008380-6221846.jpg");*/
+  background-image: url("/imagenes/Abarrotes.png");
+  background-position: center;
+  background-size: 85%;
+  /*background-repeat: no-repeat;*/
+  background-attachment: fixed;
+  
+}
+
+.login_box {
+  position: relative;
+  width: 375px;                   /* ancho */
+  padding: 3.5em 2.05% 0.9% 2.05%; /* alto */
+  backdrop-filter: blur(20px); /* instruccion para desenfocar el fondo del login */
+  /*background-color: rgba(30, 42, 56, 0.95); /* Gris azulado sólido */
+  border: 2px solid var(--primary-color);
+  border-radius: 15px;
+  color: var(--second-color);
+  box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.2);
+}
+
+/*.login_box {
+  position: relative;
+  width: 400px;
+  /*background-color: var(--bg-dark);*/
+  /*background-color: rgba(30, 42, 56, 0.95); /* Gris azulado sólido */
+  /*border-radius: 15px;
+  padding: 4.5em 2.5em 2.5em 2.5em;
+  color: var(--text-light);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+}*/
+
+
+.login-header {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  width: 140px;
+  height: 50px;
+  border-radius: 0 0 20px 20px;
+  z-index: 2;
+  box-shadow: 0 2px 8px 0 rgba(31, 38, 135, 0.10);
+}
+
+.login-header span {
+  font-size: 30px;
+  color: #222;
+  font-weight: 800;
+}
+
+.login-header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -30px;
+  width: 30px;
+  height: 30px;
+  border-top-right-radius: 50%;
+  background: transparent;
+  box-shadow: 15px 0 0 0 #fff;
+}
+
+.login-header::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -30px;
+  width: 30px;
+  height: 30px;
+  border-top-left-radius: 50%;
+  background: transparent;
+  box-shadow: -15px 0 0 0 #fff;
+}
+
+.input_box {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: 20px 0;
+}
+
+.input-field {
+  width: 100%;
+  height: 55px;
+  font-size: 16px;
+  background: transparent;
+  color: #f3eeee;
+  padding-inline: 20px 55px; /**/
+  border: 2px solid rgba(255,255,255,0.7);
+  border-radius: 7px; /*BORDES DEL TEX... Y COMBO...*/
+  outline: none;
+  transition: border 0.2s;
+}
+
+/* Al enfocar el combobox */
+.input-field:focus {
+  border: 2px solid #fff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.input-field::placeholder {
+  color: #e0e0e0;
+  opacity: 1;
+  font-size: 16px;
+}
+
+/*     PARA CAMBIAR EL COLOR DE LOS BORDES */
+.input-field:focus {
+  border: 2px solid #860202;
+  background: rgba(255,255,255,0.05);
+}
+
+.icon {
+  position: absolute;
+  top: 18px;
+  right: 25px;
+  font-size: 20px;
+  color: #fff;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Desactivar icono nativo del navegador para campos de contraseña */
+.input-field[type="password"]::-ms-reveal,
+.input-field[type="password"]::-ms-clear {
+  display: none;
+}
+
+/* Para Chrome/Safari */
+.input-field[type="password"]::-webkit-credentials-auto-fill-button {
+  display: none;
+}
+
+/* Para Firefox */
+.input-field[type="password"]::-moz-textfield-decoration-container {
+  display: none;
+}
+
+/* Icono de contraseña clickeable */
+.password-field .password-icon {
+  cursor: pointer;
+  pointer-events: auto;
+  transition: color 0.2s;
+}
+
+.password-field .password-icon:hover {
+  color: #e0e0e0;
+}
+
+.remember-forgot {
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.remember-me label {
+  color: #fff;
+  opacity: 0.8;
+  font-size: 15px;
+  margin-left: 5px;
+}
+
+.remember-me input[type="checkbox"] {
+  accent-color: #fff;
+}
+
+.forgot a {
+  color: #fff;
+  opacity: 0.8;
+  font-size: 15px;
+  transition: color 0.2s;
+}
+
+.forgot a:hover {
+  color: #e0e0e0;
+}
+
+.forgot-header span {
+  font-size: 22px;
+  text-align: center;
+  width: 100%;
+  display: block;
+}
+
+.forgot-header {
+  width: 220px !important;      /* Más ancho */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.input-submit {
+  width: 100%;
+  height: 50px;
+  background: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+  color: #222;
+  margin-top: 10px;
+}
+
+.input-submit:hover {
+  background: #e0e0e0;
+  color: #111;
+}
+
+.register {
+  text-align: center;
+  margin-top: 10px;
+  color: #fff;
+  opacity: 0.9;
+}
+
+.register a {
+  font-weight: 500;
+  color: #fff;
+  text-decoration: underline;
+  opacity: 0.9;
+}
+
+.register a:hover {
+  color: #e0e0e0;
+}
+
+.login-error {
+  color: #e53e3e;
+  background: rgba(255,245,245,0.7);
+  border: 1px solid #feb2b2;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+}
+
+.remember-forgot.single-forgot {
+  justify-content: flex-end;
+}
+
+.remember-forgot.single-forgot .forgot a {
+  text-align: right;
+  width: 100%;
+  display: block;
+}
+
+
+/*----------------------NUEVO-----------------------------*/
+/* Estilo del combobox */
+.combo-rol {
+  width: 100%;
+  height: 55px;
+  font-size: 16px;
+  background-color: rgba(255, 255, 255, 0.05); /* Fondo semi-transparente */
+  color: #f3eeee; /* Color del texto */
+  padding: 0 20px;
+  border: 2px solid rgba(255, 255, 255, 0.7); /* Borde similar a inputs */
+  border-radius: 7px;
+  outline: none;
+  appearance: none; /* Elimina flecha nativa en algunos navegadores */
+  cursor: pointer;
+  transition: border 0.2s, background 0.2s;
+  border-radius: 0.1px; /* ..0esquinas redondeadas del select visible */
+}
+
+/* Al enfocar el combobox */
+.combo-rol:focus {
+  border: 2px solid #860202;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Estilo de las opciones del combobox */
+.combo-rol option {
+  background-color: #3e638d; /* Mismo gris azulado del login_box */
+  color: #f3eeee; /* Texto claro */
+}
+
+/* Icono de rol ajustado si quieres */
+.input_box .bxs-user-badge.icon {
+  right: 25px;
+  top: 18px;
+  color: #fff;
+  opacity: 0.7;
+}
+
+
+
+/*-----------------------FIN-------------------------------*/
+
+/* Icono para mostrar/ocultar contraseña */
+.toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: #fff;
+  opacity: 0.8;
+  cursor: pointer;
+  pointer-events: auto; /* <-- importante para poder hacer click */
+  transition: color 0.2s;
+}
+
+.toggle-password:hover {
+  color: #e0e0e0;
+}
+
+
+
+
+
+@media only screen and (max-width: 564px) {
+  .wrapper {
+    padding: 20px;
+  }
+  .login_box {
+    padding: 7.5em 1.5em 4em 1.5em;
+    width: 100%;
+    min-width: 0;
+  }
+}
+

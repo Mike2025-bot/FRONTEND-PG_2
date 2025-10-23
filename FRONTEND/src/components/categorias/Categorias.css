@@ -1,0 +1,287 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body,
+html {
+  font-family: 'Montserrat', Arial, sans-serif;
+  background: #f5f5f5;
+  height: 100%;
+  color: #333;
+}
+
+/* Contenedor principal */
+.categorias {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header de la app */
+.categorias-header {
+  background: #2c3e50;            /* color de fondo del header */
+  color: #fff;                     /* texto en blanco */
+  padding: 1em;                    /* espacio interno */
+  display: flex;                   /* layout flexible */
+  align-items: center;             /* centrado vertical */
+  justify-content: space-between;  /* espacio entre título y botones */
+}
+
+.categorias-header h1 {
+  font-size: clamp(1.8rem, 4vw, 3rem); /* tamaño responsivo del título */
+}
+
+/* Contenedor de botones del header */
+.header-buttons {
+  display: flex;                  /* botones en fila */
+  gap: 0.5em;                     /* espacio entre botones */
+}
+
+/* Estilo de todos los botones del header */
+.header-buttons button {
+  background: #3498db;            /* color de fondo azul */
+  border: none;                   /* sin borde */
+  padding: 0.5em 1em;             /* espacio interno */
+  color: white;                   /* texto blancos */
+  border-radius: 5px;             /* bordes redondeados */
+  cursor: pointer;                /* cursor de mano */
+}
+
+/* Efecto hover de los botones del header */
+.header-buttons button:hover {
+  background: #2980b9;            /* cambia el fondo a un azul más oscuro */
+}
+
+/* Layout general */
+.categorias-content {
+  display: grid;
+  grid-template-columns: 2fr 0.9fr;
+  gap: 1em;
+  padding: 1em; /* Espacio interno */
+}
+
+/* Panel izquierdo */
+.panel-izquierdocat {
+  height: 650px; /*Cambia el tamaño*/
+  background: #ffffff;
+  border: 1px solid #ccc;
+  padding: 1em;
+  border-radius: 8px;
+}
+
+
+.busqueda-container {
+  display: flex;
+  align-items: center;
+  gap: 0.1em; /* separa el input y los botones */
+  margin-bottom: 1em;
+}
+
+.input-busqueda {
+  padding: 0.7em;
+  margin-bottom: 0.05em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.btn-buscar,.btn-limpiar {
+  padding: 0.5em 0.8em;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  margin-right: 0.01em;
+  margin-left: 0.3em;
+  font-family: 'Montserrat', Arial, sans-serif;
+}
+
+.btn-buscar {
+  background: #27ae60;
+  margin-right: 0.6em;
+}
+
+.btn-limpiar {
+  background: #e74c3c;
+}
+
+.btn-guardar {
+  padding: 0.5em 0.8em;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  font-family: 'Montserrat', Arial, sans-serif;
+}
+
+.btn-guardar {
+  background: #0e9236;
+}
+
+/* Lista de categorías */
+.lista-categorias {
+  margin-top: 1em;
+  max-height: 552px;
+  overflow-y: auto;
+}
+
+/* ⭐ Estilo personalizado para el scrollbar (más visible) */
+.lista-categorias::-webkit-scrollbar {
+  width: 12px; /* ancho del scrollbar */
+}
+
+.lista-categorias::-webkit-scrollbar-track {
+  background: #f1f1f1; /* color del fondo */
+  border-radius: 10px;
+}
+
+.lista-categorias::-webkit-scrollbar-thumb {
+  background: #888; /* color de la barra */
+  border-radius: 10px;
+}
+
+.lista-categorias::-webkit-scrollbar-thumb:hover {
+  background: #555; /* color al pasar el mouse */
+}
+
+.item-categoria {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5em;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.item-categoria:hover {
+  background: #dfe6e9;
+}
+
+.item-categoria.seleccionado {
+  background: #74b9ff;
+  color: white;
+}
+
+.btn-eliminar {
+  background: #c0392b;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 0.3em 0.5em;
+  cursor: pointer;
+  margin-right: 0.01em;
+}
+
+/* Panel derecho - formulario */
+.panel-derecho1 {
+  height: 152px; /*Cambia el tamaño*/
+  background: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8em;
+}
+
+.formulario label {
+  font-weight: bold;
+  margin-bottom: 0.3em;
+}
+
+.formulario input {
+  padding: 0.5em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 0.5em;
+  width: 100%;
+}
+
+/* Nuevo */
+.item-categoria.resaltado {
+  background: #74b9ff;
+  color: white;
+}
+
+.producto-categoria {
+  color: #6b7280;
+}
+
+/* Modo oscuro para categorías */
+body.dark-mode .categorias {
+  background: #222831;
+  color: #EEEEEE;
+}
+
+body.dark-mode .panel-izquierdocat,
+body.dark-mode .panel-derecho1 {
+  background: #31363F;
+  color: #EEEEEE;
+}
+
+body.dark-mode .item-categoria {
+  background: #393E46;
+  color: #EEEEEE;
+  border-radius: 8px;
+  padding: 0.5rem;
+  margin-bottom: 0.25rem;
+  transition: background 0.3s, color 0.3s;
+}
+
+body.dark-mode .item-categoria:hover {
+  background: #00ADB522;
+}
+
+body.dark-mode .item-categoria.seleccionado {
+  background: #00ADB5;
+  color: #FFFFFF;
+}
+
+body.dark-mode .item-categoria.resaltado {
+  background: #FFD36933;
+  color: #FFD369;
+}
+
+body.dark-mode .btn-eliminar,
+body.dark-mode .btn-guardar,
+body.dark-mode .btn-limpiar,
+body.dark-mode .btn-buscar {
+  background: #00ADB522;
+  color: #00ADB5;
+  border: 1px solid #00ADB5;
+}
+
+body.dark-mode .input-busqueda {
+  background: #222831;
+  color: #EEEEEE;
+  border: 1px solid #393E46;
+}
+
+/* Header modo oscuro */
+body.dark-mode .categorias-header {
+  background: #31363F;
+  color: #EEEEEE;
+}
+
+body.dark-mode .header-buttons button {
+  background: #00ADB5;
+  color: #EEEEEE;
+}
+
+body.dark-mode .header-buttons button:hover {
+  background: #00ADB5CC; /* tono más claro al pasar mouse */
+}
+
+/* Responsivo */
+@media (max-width: 900px) {
+  .categorias-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .header-buttons {
+    flex-wrap: wrap;
+  }
+}

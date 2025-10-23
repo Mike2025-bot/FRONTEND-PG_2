@@ -1,0 +1,294 @@
+.toggle-darkmode {
+  width: 56px;
+  height: 28px;
+  border-radius: 20px;
+  border: 2px solid #cfd8dc;
+  background: #232a36;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  transition: background 0.3s, border 0.3s;
+  box-sizing: border-box;
+  overflow: visible;
+}
+.toggle-darkmode:not(.dark) {
+  background: linear-gradient(135deg, #7ecbff 0%, #b3e0ff 100%);
+  border: 2px solid #ffe082;
+}
+.toggle-bg {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  transition: background 0.3s;
+}
+.toggle-darkmode.dark .toggle-bg {
+  justify-content: flex-end;
+}
+.toggle-darkmode:not(.dark) .toggle-bg {
+  justify-content: flex-start;
+}
+
+/* Nubes para modo claro */
+.clouds {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.cloud {
+  position: absolute;
+  background: #fff;
+  opacity: 0.7;
+  border-radius: 50%;
+  filter: blur(0.5px);
+  animation: cloud-move 6s linear infinite alternate;
+}
+.cloud1 { width: 18px; height: 10px; left: 10px; top: 8px; animation-delay: 0s; }
+.cloud2 { width: 12px; height: 7px; left: 28px; top: 15px; animation-delay: 1.5s; }
+.cloud3 { width: 10px; height: 6px; left: 38px; top: 5px; animation-delay: 3s; }
+
+@keyframes cloud-move {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(6px); }
+}
+
+/* Luna */
+.moon {
+  width: 22px;
+  height: 22px;
+  background: #b0c4de;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #b0c4de44;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  position: absolute;
+  /*border: 1px solid red;*/
+}
+
+.crater {
+  position: absolute;
+  background: #8a9ba8;
+  border-radius: 50%;
+  opacity: 0.5;
+}
+.crater1 {
+  width: 5px;
+  height: 5px;
+  left: 4px;
+  top: 6px;
+}
+.crater2 {
+  width: 3px;
+  height: 3px;
+  right: 5px;
+  top: 12px;
+}
+.crater3 {
+  width: 2.5px;
+  height: 2.5px;
+  left: 12px;
+  top: 13px;
+}
+
+/* Estrellas */
+.stars {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+.star {
+  position: absolute;
+  background: #fff;
+  border-radius: 50%;
+  opacity: 0.8;
+  animation: twinkle 1.5s infinite alternate;
+}
+.star1 { width: 2px; height: 2px; left: 10px; top: 8px; animation-delay: 0s; }
+.star2 { width: 1.5px; height: 1.5px; left: 20px; top: 18px; animation-delay: 0.5s; }
+.star3 { width: 1.2px; height: 1.2px; left: 30px; top: 6px; animation-delay: 1s; }
+.star4 { width: 1.8px; height: 1.8px; left: 40px; top: 14px; animation-delay: 0.8s; }
+
+@keyframes twinkle {
+  0% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+/* Sol */
+.sun {
+  width: 22px;
+  height: 22px;
+  background: #ffe600;
+  border-radius: 50%;
+  box-shadow: 0 0 12px #ffe60088;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  position: absolute;
+}
+
+.ray {
+  position: absolute;
+  background: #ffe082;
+  border-radius: 2px;
+  opacity: 0.7;
+  animation: ray-rotate 2s linear infinite;
+}
+.ray1 { width: 10px; height: 2px; left: 6px; top: 0px; transform: rotate(0deg); }
+.ray2 { width: 10px; height: 2px; left: 6px; top: 18px; transform: rotate(90deg); }
+.ray3 { width: 10px; height: 2px; left: -2px; top: 10px; transform: rotate(45deg); }
+.ray4 { width: 10px; height: 2px; left: 14px; top: 10px; transform: rotate(-45deg); }
+
+@keyframes ray-rotate {
+  0% { opacity: 0.7; }
+  50% { opacity: 1; }
+  100% { opacity: 0.7; }
+}
+
+.toggle-darkmode {
+  box-shadow: 0 2px 8px #0001;
+  margin: 0 8px;
+}
+
+.toggle-darkmode:focus {
+  outline: 2px solid #667eea;
+} 
+
+.moon-sun {
+  width: 22px;
+  height: 22px;
+  position: absolute;
+  top: 2px;
+  left: 0; /* posición inicial */
+  z-index: 10;
+  transition: transform 1s cubic-bezier(0.77, 0, 0.18, 1);
+}
+.toggle-darkmode.dark .moon-sun {
+  transform: translateX(30px); /* hacia la derecha */
+}
+.toggle-darkmode:not(.dark) .moon-sun {
+  transform: translateX(2px); /* hacia la izquierda */
+}
+
+/* En el círculo, deja todo centrado sin movimiento */
+.toggle-darkmode-circle .moon-sun {
+  transform: none !important;
+}
+
+.toggle-darkmode.vertical {
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  padding: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle-darkmode.vertical .moon,
+.toggle-darkmode.vertical .sun {
+  width: 22px !important;
+  height: 22px !important;
+  top: 7px !important;
+  left: 7px !important;
+  right: 7px !important;
+}
+
+.toggle-darkmode-circle {
+  width: 38px; /* Ancho del círculo */
+  height: 38px; /* Alto del círculo */
+  border-radius: 50%; /* hace que el círculo sea redondo */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0 auto;
+  border: 2.5px solid #ffe082;
+  background: linear-gradient(135deg, #7ecbff 0%, #b3e0ff 100%);
+  font-size: 1.3rem;
+  box-shadow: 0 2px 8px #0001;
+}
+.toggle-darkmode-circle.dark {
+  background: #232a36;
+  border: 2.5px solid #7ecbff;
+}
+.toggle-darkmode-circle .toggle-bg {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: none;
+  padding: 0;
+}
+.toggle-darkmode-circle:not(.dark) .toggle-bg {
+  background: linear-gradient(135deg, #7ecbff 0%, #b3e0ff 100%);
+}
+.toggle-darkmode-circle.dark .toggle-bg {
+  background: #232a36;
+}
+.toggle-darkmode-circle .moon,
+.toggle-darkmode-circle .sun {
+  width: 26px !important;
+  height: 26px !important;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  left: 0 !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+}
+
+.toggle-darkmode-circle .moon-sun {
+  width: 26px !important;
+  height: 26px !important;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  transform: none !important; /* Anula la animación de movimiento */
+  top: unset !important;
+  left: unset !important;
+}
+
+.toggle-darkmode-circle .clouds {
+  z-index: 2;
+}
+.toggle-darkmode-circle .stars {
+  z-index: 2;
+}
+
+.toggle-darkmode-circle .cloud1 { width: 16px; height: 8px; left: 7px; top: 13px; animation-delay: 0s; }
+.toggle-darkmode-circle .cloud2 { width: 10px; height: 5px; left: 22px; top: 22px; animation-delay: 1.5s; }
+.toggle-darkmode-circle .cloud3 { width: 8px; height: 4px; left: 28px; top: 8px; animation-delay: 3s; }
+
+.toggle-darkmode-circle .circle-moon,
+.toggle-darkmode-circle .circle-sun {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+}
