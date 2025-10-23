@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import './Dashboard.css';
-
-const API_URL = 'http://localhost:3000';
+import { API_URL } from '../../config';
 
 interface Estadistica {
   id: string;
