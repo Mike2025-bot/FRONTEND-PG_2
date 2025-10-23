@@ -1,0 +1,82 @@
+import React, { useState } from 'react';
+import HasOlvidadoTuContrasena from './HasOlvidadoTuContrasena';
+import './LoginRegistro.css';
+
+const LoginRegistro: React.FC = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [showForgot, setShowForgot] = useState(false);
+
+  if (showForgot) {
+    return <HasOlvidadoTuContrasena onBackToLogin={() => setShowForgot(false)} />;
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (username === 'admin' && password === 'admin') {
+      localStorage.setItem('logueado', 'true');
+      window.location.reload();
+    } else {
+      setError('Nombre de usuario o contraseña incorrectos');
+    }
+  };
+
+  return (
+    <div className="wrapper">
+      <div className="login_box">
+        <form onSubmit={handleSubmit}>
+          <div className="login-header">
+            <span>Login</span>
+          </div>
+
+          <div className="input_box">
+            <input
+              type="text"
+              id="user"
+              className="input-field"
+              required
+              placeholder="Usuario"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
+            />
+            <i className="bx bx-user icon"></i>
+          </div>
+
+          <div className="input_box">
+            <input
+              type="password"
+              id="pass"
+              className="input-field"
+              required
+              placeholder="Password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+            />
+            <i className="bx bx-lock-alt icon"></i>
+          </div>
+          
+
+          <div className="remember-forgot single-forgot">
+            <div className="forgot">
+              <a href="#" onClick={e => {e.preventDefault(); setShowForgot(true);}}>¿Has olvidado tu contraseña?</a>
+            </div>
+          </div>
+
+          {error && <div className="login-error">{error}</div>}
+
+          <div className="input_box">
+            <input type="submit" className="input-submit" value="Login" />
+          </div>
+
+          <div className="register">
+            {/* aqui se puede colocar lo siguiente ¿No tienes una cuenta? Regístrate, <span>Don't have an account? <a href="#">Register</a></span> */}
+            <span><a href="#"></a></span>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default LoginRegistro;

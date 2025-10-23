@@ -1,0 +1,798 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body,
+html {
+  font-family: 'Montserrat', Arial, sans-serif;
+  background: #f5f5f5;
+  height: 100%;
+  color: #333;
+}
+
+/* Contenedor principal */
+.usuarios-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header de la app */
+.usuarios-header {
+  background: #2c3e50;
+  color: #fff;
+  padding: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.usuarios-header h1 {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  margin: 0;
+}
+
+/* Contenedor de botones del header */
+.header-buttons {
+  display: flex;
+  gap: 0.5em;
+}
+
+/* Estilo de todos los botones del header */
+.header-buttons button {
+  background: #3498db;
+  border: none;
+  padding: 0.5em 1em;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: 'Montserrat', Arial, sans-serif;
+}
+
+/* Efecto hover de los botones del header */
+.header-buttons button:hover {
+  background: #2980b9;
+}
+
+/* Layout general */
+.usuarios-content {
+  display: flex;
+  gap: 1em;
+  flex: 0.6;
+  align-items: stretch;
+  padding: 1em;
+}
+
+/* Panel izquierdo */
+.panel-izquierdo1 {
+  height: 700px;
+  background: #ecf0f1;
+  border: 1px solid #ccc;
+  padding: 1em;
+  border-radius: 8px;
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+/* Panel derecho - formulario */
+.panel-derecho2 {
+  height: 700px;
+  background: #ecf0f1;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8em;
+  flex: 1;
+}
+
+/* Lista de usuarios */
+.lista-usuarios {
+  margin-top: 1em;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  max-height: 532px;
+}
+
+.item-usuario {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5em;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+
+.item-usuario:hover {
+  background: #dfe6e9;
+}
+
+.item-usuario.seleccionado {
+  background: #74b9ff;
+  color: white;
+}
+
+/* Busqueda */
+.busqueda-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.8em;
+}
+
+.input-busqueda {
+  flex: 1;
+  padding: 0.5em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 0.5em;
+}
+
+/* Botones */
+.btn-buscar,
+.btn-limpiar,
+.btn-guardar,
+.btn-editar,
+.btn-eliminar,
+.btn-agregar-rol {
+  padding: 0.5em 0.8em;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-size: 0.9em;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-width: 100px; /* Mismo ancho mínimo para todos */
+  text-align: center;
+  margin-right: 0.1rem; /* ESPACIO ENTRE BOTONES */
+}
+
+.btn-limpiarr{
+  padding: 0.5em 0.8em;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-size: 0.9em;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  margin-right: 0.1rem; /* ESPACIO ENTRE BOTONES */
+}
+
+.btn-limpiarr{
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+}
+
+.btn-buscar {
+  background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+  margin-right: 0.5em;
+}
+
+.btn-limpiar {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+}
+
+.btn-guardar {
+  background: linear-gradient(135deg, #0e9236 0%, #0d7a2e 100%);
+}
+
+.btn-editar {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+}
+
+.btn-eliminar {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+}
+
+.btn-agregar-rol {
+  background: linear-gradient(135deg, #2980b9 0%, #2471a3 100%);
+  margin-left: 0.5em;
+}
+
+.btn-limpiar-contrasenas {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+  margin-left: 0.5em;
+  font-size: 0.8em;
+  padding: 0.4em 0.6em;
+}
+
+/* Efectos hover para todos los botones */
+.btn-buscar:hover,
+.btn-limpiar:hover,
+.btn-limpiarr:hover,
+.btn-guardar:hover,
+.btn-editar:hover,
+.btn-eliminar:hover,
+.btn-agregar-rol:hover,
+.btn-limpiar-contrasenas:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-buscar:hover {
+  background: linear-gradient(135deg, #229954 0%, #1e8449 100%);
+}
+
+.btn-limpiar:hover {
+  background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+}
+
+.btn-limpiarr:hover {
+  background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+}
+
+.btn-guardar:hover {
+  background: linear-gradient(135deg, #0d7a2e 0%, #0b5a22 100%);
+}
+
+.btn-editar:hover {
+  background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+}
+
+.btn-eliminar:hover {
+  background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+}
+
+.btn-agregar-rol:hover {
+  background: linear-gradient(135deg, #2471a3 0%, #1f618d 100%);
+}
+
+.btn-limpiar-contrasenas:hover {
+  background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+}
+
+/* Efecto active (cuando se presiona) */
+.btn-buscar:active,
+.btn-limpiar:active,
+.btn-limpiarr:active,
+.btn-guardar:active,
+.btn-editar:active,
+.btn-eliminar:active,
+.btn-agregar-rol:active,
+.btn-limpiar-contrasenas:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Contenedor de botones del formulario */
+.formulario-botones {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.formulario input,
+.formulario select {
+  padding: 0.5em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 0.5em;
+  width: 100%;
+}
+
+/* Modo oscuro */
+body.dark-mode .usuarios-container {
+  background: #222831;
+  color: #EEEEEE;
+}
+
+body.dark-mode .panel-izquierdo1,
+body.dark-mode .panel-derecho2 {
+  background: #31363F;
+  color: #EEEEEE;
+}
+
+body.dark-mode .item-usuario {
+  background: #393E46;
+  color: #EEEEEE;
+  border-radius: 8px;
+  padding: 0.5rem;
+  margin-bottom: 0.25rem;
+  transition: background 0.3s, color 0.3s;
+}
+
+body.dark-mode .item-usuario:hover {
+  background: #00ADB522;
+}
+
+body.dark-mode .item-usuario.seleccionado {
+  background: #00ADB5;
+  color: #FFFFFF;
+}
+
+body.dark-mode .btn-eliminar,
+body.dark-mode .btn-guardar,
+body.dark-mode .btn-limpiar,
+body.dark-mode .btn-editar,
+body.dark-mode .btn-buscar,
+body.dark-mode .btn-agregar-rol {
+  background: linear-gradient(135deg, #00ADB5 0%, #008a8a 100%);
+  color: #ffffff;
+  border: 1px solid #00ADB5;
+  box-shadow: 0 2px 6px rgba(0, 173, 181, 0.3);
+}
+
+body.dark-mode .btn-buscar:hover,
+body.dark-mode .btn-limpiar:hover,
+body.dark-mode .btn-guardar:hover,
+body.dark-mode .btn-editar:hover,
+body.dark-mode .btn-eliminar:hover,
+body.dark-mode .btn-agregar-rol:hover,
+body.dark-mode .btn-limpiar-contrasenas:hover {
+  background: linear-gradient(135deg, #008a8a 0%, #006666 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 173, 181, 0.4);
+}
+
+body.dark-mode .btn-buscar:active,
+body.dark-mode .btn-limpiar:active,
+body.dark-mode .btn-guardar:active,
+body.dark-mode .btn-editar:active,
+body.dark-mode .btn-eliminar:active,
+body.dark-mode .btn-agregar-rol:active,
+body.dark-mode .btn-limpiar-contrasenas:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(0, 173, 181, 0.2);
+}
+
+body.dark-mode .input-busqueda {
+  background: #222831;
+  color: #EEEEEE;
+  border: 1px solid #393E46;
+}
+
+
+/*-------------------------------------------*/
+
+.tabla-usuarios {
+  max-height: 500px;
+  overflow-y: auto;
+  overflow-x: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tabla-usuarios table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+/* Hacer que el thead se quede fijo al hacer scroll */
+.tabla-usuarios thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tabla-usuarios th,
+.tabla-usuarios td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.tabla-usuarios th {
+  background-color: #05bada;
+}
+
+.tabla-usuarios tr:hover {
+  background-color: #86a0bd;
+  cursor: pointer;
+}
+
+/*FFFFFFF*/
+.tabla-usuarios tr.seleccionado {
+  background-color: #86a0bd;
+}
+
+body.dark-mode .tabla-usuarios tr.seleccionado {
+  background-color: #86a0bd;
+}
+
+/*---------NUEVO---------------*/
+
+tr.seleccionado {
+  background-color: #e0f7fa;
+  font-weight: bold;
+}
+
+/* Header modo oscuro */
+body.dark-mode .usuarios-header {
+  background: #31363F;
+  color: #EEEEEE;
+}
+
+body.dark-mode .header-buttons button {
+  background: #00ADB5;
+  color: #EEEEEE;
+}
+
+body.dark-mode .header-buttons button:hover {
+  background: #00ADB5CC;
+}
+
+/* Responsivo */
+@media (max-width: 900px) {
+  .usuarios-content {
+    flex-direction: column;
+  }
+  
+  .header-buttons {
+    flex-wrap: wrap;
+  }
+}
+
+/* ===== ESTILOS PARA PERMISOS ===== */
+.permisos-container {
+  margin-top: 0.9rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.permisos-container h3 {
+  margin-bottom: 1rem;
+  color: #495057;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 0.4rem;
+}
+
+.permisos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.permiso-item {
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 0.01rem;  /* PARA CAMBIAR EL TAMÑAO DE LOS TEXBOX*/
+  border: 1px solid #e9ecef;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.permiso-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 123, 255, 0.12);
+  border-color: #007bff;
+}
+
+.permiso-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 0.4rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.permiso-label:hover {
+  background-color: #f8f9fa;
+}
+
+.permiso-checkbox {
+  width: 16px;
+  height: 16px;
+  margin-right: 0.6rem;
+  accent-color: #007bff;
+  cursor: pointer;
+  transform: scale(1.05);
+}
+
+.permiso-text {
+  font-size: 0.85rem;
+  color: #495057;
+  font-weight: 500;
+  flex: 1;
+}
+
+.permiso-checkbox:checked + .permiso-text {
+  color: #007bff;
+  font-weight: 600;
+}
+
+.btn-guardar-permisos {
+  width: 100%;
+  padding: 0.6rem 1.2rem;
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.25);
+}
+
+.btn-guardar-permisos:hover {
+  background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(0, 123, 255, 0.35);
+}
+
+.btn-guardar-permisos:active {
+  transform: translateY(0);
+}
+
+/* Modo oscuro para permisos */
+body.dark-mode .permisos-container {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  border-color: #4a5568;
+}
+
+body.dark-mode .permisos-container h3 {
+  color: #e2e8f0;
+  border-bottom-color: #00ADB5;
+}
+
+body.dark-mode .permiso-item {
+  background: #393E46;
+  border-color: #4a5568;
+}
+
+body.dark-mode .permiso-item:hover {
+  border-color: #00ADB5;
+  box-shadow: 0 4px 12px rgba(0, 173, 181, 0.2);
+}
+
+body.dark-mode .permiso-label:hover {
+  background-color: #4a5568;
+}
+
+body.dark-mode .permiso-text {
+  color: #e2e8f0;
+}
+
+body.dark-mode .permiso-checkbox:checked + .permiso-text {
+  color: #00ADB5;
+}
+
+body.dark-mode .btn-guardar-permisos {
+  background: linear-gradient(135deg, #00ADB5 0%, #008a8a 100%);
+  box-shadow: 0 2px 8px rgba(0, 173, 181, 0.3);
+}
+
+body.dark-mode .btn-guardar-permisos:hover {
+  background: linear-gradient(135deg, #008a8a 0%, #006666 100%);
+  box-shadow: 0 4px 12px rgba(0, 173, 181, 0.4);
+}
+
+/* ===== ESTILOS PARA INPUT DE CONTRASEÑA CON ICONO (estilo LoginRegistro) ===== */
+.password-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 0.5em;
+}
+
+.password-input {
+  width: 100%;
+  padding: 0.5em;
+  padding-right: 2.5em; /* Espacio para el icono */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Ocultar icono nativo del navegador para campos de contraseña */
+.password-input::-ms-reveal,
+.password-input::-ms-clear {
+  display: none;
+}
+
+/* Para Chrome/Safari/Edge */
+.password-input::-webkit-credentials-auto-fill-button,
+.password-input::-webkit-textfield-decoration-container {
+  display: none !important;
+}
+
+/* Para Firefox */
+.password-input::-moz-textfield-decoration-container {
+  display: none;
+}
+
+/* Icono de contraseña clickeable (estilo Boxicons) */
+.password-toggle-icon {
+  position: absolute;
+  right: 0.75em;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.3em;
+  color: #495057;
+  opacity: 0.7;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: color 0.2s, opacity 0.2s;
+}
+
+.password-toggle-icon:hover {
+  color: #007bff;
+  opacity: 1;
+}
+
+/* Modo oscuro para el input de contraseña */
+body.dark-mode .password-input {
+  background: #222831;
+  color: #EEEEEE;
+  border: 1px solid #393E46;
+}
+
+body.dark-mode .password-toggle-icon {
+  color: #00ADB5;
+  opacity: 0.8;
+}
+
+body.dark-mode .password-toggle-icon:hover {
+  color: #00ADB5;
+  opacity: 1;
+  filter: brightness(1.3);
+}
+
+/* ===== ESTILOS PARA LISTA DE ROLES ===== */
+.roles-container {
+  margin-top: 1.5em;
+  padding: 1em;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.roles-container h3 {
+  color: #2c3e50;
+  margin-bottom: 1em;
+  font-size: 1.2em;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 0.5em;
+}
+
+.roles-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8em;
+}
+
+.rol-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8em 1em;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border-left: 4px solid #3498db;
+  transition: all 0.3s ease;
+}
+
+.rol-item:hover {
+  background: #e8f4f8;
+  transform: translateX(5px);
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.2);
+}
+
+.rol-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+}
+
+.rol-nombre {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 1em;
+}
+
+.rol-usuarios {
+  font-size: 0.85em;
+  color: #7f8c8d;
+}
+
+.btn-eliminar-rol {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  border: none;
+  padding: 0.5em 0.8em;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-size: 1.2em;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-eliminar-rol:hover {
+  background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+}
+
+.btn-eliminar-rol:active {
+  transform: scale(0.95);
+}
+
+/* Dark mode para roles */
+body.dark-mode .roles-container {
+  background: #1e1e1e;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .roles-container h3 {
+  color: #00ADB5;
+  border-bottom-color: #00ADB5;
+}
+
+body.dark-mode .rol-item {
+  background: #2a2a2a;
+  border-left-color: #00ADB5;
+}
+
+body.dark-mode .rol-item:hover {
+  background: #333333;
+  box-shadow: 0 2px 8px rgba(0, 173, 181, 0.3);
+}
+
+body.dark-mode .rol-nombre {
+  color: #ffffff;
+}
+
+body.dark-mode .rol-usuarios {
+  color: #95a5a6;
+}
+
+/* ===== INDICADOR DE ELIMINACIÓN ===== */
+.indicador-eliminacion {
+  margin: 0.4em 0;
+  text-align: left;
+  animation: fadeIn 0.3s ease;
+}
+
+.indicador-eliminacion span {
+  color: #856404;
+  font-size: 0.75em;
+}
+
+.indicador-eliminacion strong {
+  color: #e74c3c;
+  font-weight: 600;
+  font-size: 0.95em;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Dark mode para indicador */
+body.dark-mode .indicador-eliminacion span {
+  color: #ffd54f;
+}
+
+body.dark-mode .indicador-eliminacion strong {
+  color: #ff6b6b;
+}
