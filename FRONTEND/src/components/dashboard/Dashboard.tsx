@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import './Dashboard.css';
-import API_URL from '../../config';
+
+const API_URL = 'http://localhost:3000';
 
 interface Estadistica {
   id: string;
@@ -30,6 +31,19 @@ interface ActividadReciente {
 interface VentaDia {
   dia: string;
   total: number;
+  fecha: string;
+}
+
+interface ProductoVendido {
+  nombre: string;
+  cantidad: number;
+  total: number;
+}
+
+interface CategoriaVenta {
+  categoria: string;
+  total: number;
+  porcentaje: number;
 }
 
 const Dashboard = () => {
@@ -38,13 +52,18 @@ const Dashboard = () => {
   const [totalProductos, setTotalProductos] = useState<number>(0);
   const [stockTotal, setStockTotal] = useState<number>(0);
   const [productosStockBajo, setProductosStockBajo] = useState<number>(0);
-  const [productoTop, setProductoTop] = useState<string>('');
-  const [ventasProductoTop, setVentasProductoTop] = useState<number>(0);
   const [productosRecientes, setProductosRecientes] = useState<ProductoReciente[]>([]);
   const [actividadesRecientes, setActividadesRecientes] = useState<ActividadReciente[]>([]);
   const [ventasPorDia, setVentasPorDia] = useState<VentaDia[]>([]);
   const [periodoGrafico, setPeriodoGrafico] = useState<7 | 30 | 90>(7);
   const [cargando, setCargando] = useState<boolean>(true);
+  const [fechaInicio, setFechaInicio] = useState<string>('');
+  const [fechaFin, setFechaFin] = useState<string>('');
+  const [usarRangoPersonalizado, setUsarRangoPersonalizado] = useState<boolean>(false);
+  const [topProductos, setTopProductos] = useState<ProductoVendido[]>([]);
+  const [ventasPorCategoria, setVentasPorCategoria] = useState<CategoriaVenta[]>([]);
+  const [barraHover, setBarraHover] = useState<number | null>(null);
+  const [ventasMesAnterior, setVentasMesAnterior] = useState<number>(0);
 
   // Cargar productos desde la API
   useEffect(() => {
@@ -194,38 +213,21 @@ const Dashboard = () => {
         setVentasTotales(total);
         setTotalVentas(ventas.length);
         
-        // Calcular producto más vendido
-        const productosVendidos: { [key: string]: { nombre: string, cantidad: number } } = {};
+        // Calcular ventas del mes anterior para comparación
+        const fechaActual = new Date();
+        const inicioMesAnterior = new Date(fechaActual.getFullYear(), fechaActual.getMonth() - 1, 1);
+        const finMesAnterior = new Date(fechaActual.getFullYear(), fechaActual.getMonth(), 0);
         
-        // Cargar detalles de salidas (ventas) desde la API
-        const responseDetalles = await fetch(`${API_URL}/api/salidas/detalle-salidas`);
-        const detallesVentas = await responseDetalles.json();
-        
-        // Agrupar por producto
-        detallesVentas.forEach((detalle: any) => {
-          const idProducto = detalle.id_producto;
-          const nombreProducto = detalle.nombre_producto || 'Producto';
-          const cantidad = parseInt(detalle.cantidad || 0);
-          
-          if (!productosVendidos[idProducto]) {
-            productosVendidos[idProducto] = { nombre: nombreProducto, cantidad: 0 };
-          }
-          productosVendidos[idProducto].cantidad += cantidad;
+        const ventasMesAnteriorData = ventas.filter((venta: any) => {
+          const fechaVenta = new Date(venta.fecha);
+          return fechaVenta >= inicioMesAnterior && fechaVenta <= finMesAnterior;
         });
         
-        // Encontrar el producto con más ventas
-        let maxVentas = 0;
-        let nombreTop = 'Sin ventas';
+        const totalMesAnterior = ventasMesAnteriorData.reduce((sum: number, venta: any) => {
+          return sum + parseFloat(venta.total || 0);
+        }, 0);
         
-        Object.values(productosVendidos).forEach((producto) => {
-          if (producto.cantidad > maxVentas) {
-            maxVentas = producto.cantidad;
-            nombreTop = producto.nombre;
-          }
-        });
-        
-        setProductoTop(nombreTop);
-        setVentasProductoTop(maxVentas);
+        setVentasMesAnterior(totalMesAnterior);
       } catch (error) {
         console.error('Error al cargar ventas:', error);
       } finally {
@@ -251,6 +253,90 @@ const Dashboard = () => {
     };
   }, []);
 
+  // Cargar top productos más vendidos
+  useEffect(() => {
+    const cargarTopProductos = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/salidas/detalle-salidas`);
+        const detalles = await response.json();
+        
+        // Agrupar por producto
+        const productosMap: { [key: string]: { nombre: string, cantidad: number, total: number } } = {};
+        
+        detalles.forEach((detalle: any) => {
+          const id = detalle.id_producto;
+          const nombre = detalle.nombre_producto || 'Producto';
+          const cantidad = parseInt(detalle.cantidad || 0);
+          const subtotal = parseFloat(detalle.subtotal || 0);
+          
+          if (!productosMap[id]) {
+            productosMap[id] = { nombre, cantidad: 0, total: 0 };
+          }
+          productosMap[id].cantidad += cantidad;
+          productosMap[id].total += subtotal;
+        });
+        
+        // Convertir a array y ordenar por cantidad
+        const topProductosArray = Object.values(productosMap)
+          .sort((a, b) => b.cantidad - a.cantidad)
+          .slice(0, 5);
+        
+        setTopProductos(topProductosArray);
+      } catch (error) {
+        console.error('Error al cargar top productos:', error);
+      }
+    };
+
+    cargarTopProductos();
+    const interval = setInterval(cargarTopProductos, 30000);
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  // Cargar ventas por categoría
+  useEffect(() => {
+    const cargarVentasPorCategoria = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/salidas/detalle-salidas`);
+        const detalles = await response.json();
+        
+        // Agrupar por categoría
+        const categoriasMap: { [key: string]: number } = {};
+        
+        detalles.forEach((detalle: any) => {
+          const categoria = detalle.nombre_categoria || 'Sin categoría';
+          const subtotal = parseFloat(detalle.subtotal || 0);
+          
+          if (!categoriasMap[categoria]) {
+            categoriasMap[categoria] = 0;
+          }
+          categoriasMap[categoria] += subtotal;
+        });
+        
+        // Calcular total y porcentajes
+        const totalVentas = Object.values(categoriasMap).reduce((sum, val) => sum + val, 0);
+        
+        const categoriasArray: CategoriaVenta[] = Object.entries(categoriasMap)
+          .map(([categoria, total]) => ({
+            categoria,
+            total,
+            porcentaje: totalVentas > 0 ? (total / totalVentas) * 100 : 0
+          }))
+          .sort((a, b) => b.total - a.total)
+          .slice(0, 5);
+        
+        setVentasPorCategoria(categoriasArray);
+      } catch (error) {
+        console.error('Error al cargar ventas por categoría:', error);
+      }
+    };
+
+    cargarVentasPorCategoria();
+    const interval = setInterval(cargarVentasPorCategoria, 30000);
+    
+    return () => clearInterval(interval);
+  }, []);
+
   // Cargar ventas por día para el gráfico
   useEffect(() => {
     const cargarVentasPorDia = async () => {
@@ -258,24 +344,38 @@ const Dashboard = () => {
         const response = await fetch(`${API_URL}/api/ventas`);
         const ventas = await response.json();
         
-        // Calcular fecha límite según el periodo
-        const ahora = new Date();
-        const fechaLimite = new Date();
-        fechaLimite.setDate(ahora.getDate() - periodoGrafico);
+        let fechaLimite: Date;
+        let fechaFinal: Date;
+        
+        if (usarRangoPersonalizado && fechaInicio && fechaFin) {
+          // Usar rango personalizado
+          fechaLimite = new Date(fechaInicio);
+          fechaFinal = new Date(fechaFin);
+        } else {
+          // Usar periodo predefinido
+          const ahora = new Date();
+          fechaFinal = ahora;
+          fechaLimite = new Date();
+          fechaLimite.setDate(ahora.getDate() - periodoGrafico);
+        }
         
         // Filtrar ventas del periodo
         const ventasPeriodo = ventas.filter((venta: any) => {
           const fechaVenta = new Date(venta.fecha);
-          return fechaVenta >= fechaLimite;
+          return fechaVenta >= fechaLimite && fechaVenta <= fechaFinal;
         });
+        
+        // Calcular número de días
+        const diasDiferencia = Math.ceil((fechaFinal.getTime() - fechaLimite.getTime()) / (1000 * 60 * 60 * 24));
+        const numDias = usarRangoPersonalizado ? diasDiferencia : periodoGrafico;
         
         // Agrupar ventas por día
         const ventasPorDiaMap: { [key: string]: number } = {};
         
         // Inicializar todos los días del periodo con 0
-        for (let i = 0; i < periodoGrafico; i++) {
-          const fecha = new Date();
-          fecha.setDate(ahora.getDate() - (periodoGrafico - 1 - i));
+        for (let i = 0; i < numDias; i++) {
+          const fecha = new Date(fechaLimite);
+          fecha.setDate(fechaLimite.getDate() + i);
           const diaKey = fecha.toISOString().split('T')[0];
           ventasPorDiaMap[diaKey] = 0;
         }
@@ -292,16 +392,19 @@ const Dashboard = () => {
           const fecha = new Date(dia);
           let diaFormateado = '';
           
-          if (periodoGrafico === 7) {
-            // Para 7 días: Lun, Mar, Mié, etc.
+          if (numDias <= 7) {
+            // Para 7 días o menos: Lun, Mar, Mié, etc.
             const dias = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
             diaFormateado = dias[fecha.getDay()];
+          } else if (numDias <= 31) {
+            // Para hasta 31 días: DD/MM
+            diaFormateado = `${fecha.getDate()}/${fecha.getMonth() + 1}`;
           } else {
-            // Para 30 y 90 días: DD/MM
+            // Para más días: DD/MM
             diaFormateado = `${fecha.getDate()}/${fecha.getMonth() + 1}`;
           }
           
-          return { dia: diaFormateado, total };
+          return { dia: diaFormateado, total, fecha: dia };
         });
         
         setVentasPorDia(ventasArray);
@@ -326,15 +429,21 @@ const Dashboard = () => {
       clearInterval(interval);
       window.removeEventListener('stockActualizado', handleStockActualizado);
     };
-  }, [periodoGrafico]);
+  }, [periodoGrafico, usarRangoPersonalizado, fechaInicio, fechaFin]);
+
+  // Calcular porcentaje de cambio vs mes anterior
+  const calcularCambio = () => {
+    if (ventasMesAnterior === 0) return 0;
+    return ((ventasTotales - ventasMesAnterior) / ventasMesAnterior) * 100;
+  };
 
   const estadisticas: Estadistica[] = [
     {
       id: 'ventas',
       titulo: 'Ventas Totales',
       valor: cargando ? 'Cargando...' : `Q${ventasTotales.toFixed(2)}`,
-      cambio: `${totalVentas} ventas`,
-      porcentaje: 12.5,
+      cambio: ventasMesAnterior > 0 ? `${calcularCambio() >= 0 ? '+' : ''}${calcularCambio().toFixed(1)}% vs mes anterior` : `${totalVentas} ventas`,
+      porcentaje: calcularCambio(),
       icono: '💰',
       color: '#10b981'
     },
@@ -355,15 +464,6 @@ const Dashboard = () => {
       porcentaje: productosStockBajo > 0 ? -10 : 0,
       icono: '⚠️',
       color: '#ef4444'
-    },
-    {
-      id: 'producto-top',
-      titulo: 'Producto Top',
-      valor: productoTop,
-      cambio: `${ventasProductoTop} unidades vendidas`,
-      porcentaje: 15.3,
-      icono: '🔥',
-      color: '#f59e0b'
     }
   ];
 
@@ -466,28 +566,84 @@ const Dashboard = () => {
         {/* Gráfico de ventas */}
         <div className="content-card full-width">
           <div className="card-header">
-            <h3>Ventas del Mes</h3>
+            <h3>📈 Ventas por Período</h3>
             <div className="chart-controls">
               <button 
-                className={`chart-btn ${periodoGrafico === 7 ? 'active' : ''}`}
-                onClick={() => setPeriodoGrafico(7)}
+                className={`chart-btn ${!usarRangoPersonalizado && periodoGrafico === 7 ? 'active' : ''}`}
+                onClick={() => {
+                  setUsarRangoPersonalizado(false);
+                  setPeriodoGrafico(7);
+                }}
               >
                 7 días
               </button>
               <button 
-                className={`chart-btn ${periodoGrafico === 30 ? 'active' : ''}`}
-                onClick={() => setPeriodoGrafico(30)}
+                className={`chart-btn ${!usarRangoPersonalizado && periodoGrafico === 30 ? 'active' : ''}`}
+                onClick={() => {
+                  setUsarRangoPersonalizado(false);
+                  setPeriodoGrafico(30);
+                }}
               >
                 30 días
               </button>
               <button 
-                className={`chart-btn ${periodoGrafico === 90 ? 'active' : ''}`}
-                onClick={() => setPeriodoGrafico(90)}
+                className={`chart-btn ${!usarRangoPersonalizado && periodoGrafico === 90 ? 'active' : ''}`}
+                onClick={() => {
+                  setUsarRangoPersonalizado(false);
+                  setPeriodoGrafico(90);
+                }}
               >
                 90 días
               </button>
             </div>
           </div>
+          
+          {/* Selector de fechas personalizado */}
+          <div className="date-selector">
+            <div className="date-inputs">
+              <div className="date-input-group">
+                <label>📅 Fecha Inicio:</label>
+                <input 
+                  type="date" 
+                  value={fechaInicio}
+                  onChange={(e) => {
+                    setFechaInicio(e.target.value);
+                    if (e.target.value && fechaFin) {
+                      setUsarRangoPersonalizado(true);
+                    }
+                  }}
+                  className="date-input"
+                />
+              </div>
+              <div className="date-input-group">
+                <label>📅 Fecha Fin:</label>
+                <input 
+                  type="date" 
+                  value={fechaFin}
+                  onChange={(e) => {
+                    setFechaFin(e.target.value);
+                    if (fechaInicio && e.target.value) {
+                      setUsarRangoPersonalizado(true);
+                    }
+                  }}
+                  className="date-input"
+                />
+              </div>
+              {usarRangoPersonalizado && (
+                <button 
+                  className="reset-btn"
+                  onClick={() => {
+                    setUsarRangoPersonalizado(false);
+                    setFechaInicio('');
+                    setFechaFin('');
+                  }}
+                >
+                  🔄 Restablecer
+                </button>
+              )}
+            </div>
+          </div>
+
           <div className="chart-container">
             <div className="chart-placeholder">
               <div className="chart-bars">
@@ -500,20 +656,36 @@ const Dashboard = () => {
                     return (
                       <div
                         key={index}
-                        className="chart-bar"
-                        style={{ height: `${altura}%` }}
-                        title={`${venta.dia}: Q${venta.total.toFixed(2)}`}
-                      ></div>
+                        className="chart-bar-wrapper"
+                        onMouseEnter={() => setBarraHover(index)}
+                        onMouseLeave={() => setBarraHover(null)}
+                      >
+                        {barraHover === index && (
+                          <div className="chart-tooltip">
+                            <div className="tooltip-date">{venta.fecha}</div>
+                            <div className="tooltip-value">Q{venta.total.toFixed(2)}</div>
+                          </div>
+                        )}
+                        <div
+                          className="chart-bar"
+                          style={{ height: `${Math.max(altura, 5)}%` }}
+                        >
+                          {altura > 15 && (
+                            <span className="bar-value">Q{venta.total.toFixed(0)}</span>
+                          )}
+                        </div>
+                      </div>
                     );
                   })
                 ) : (
                   // Placeholder mientras carga
                   [0, 0, 0, 0, 0, 0, 0].map((_, index) => (
-                    <div
-                      key={index}
-                      className="chart-bar"
-                      style={{ height: '10%', opacity: 0.3 }}
-                    ></div>
+                    <div key={index} className="chart-bar-wrapper">
+                      <div
+                        className="chart-bar"
+                        style={{ height: '10%', opacity: 0.3 }}
+                      ></div>
+                    </div>
                   ))
                 )}
               </div>
@@ -534,6 +706,73 @@ const Dashboard = () => {
                   </>
                 )}
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Gráficos adicionales */}
+        <div className="content-grid">
+          {/* Top 5 Productos Más Vendidos */}
+          <div className="content-card">
+            <div className="card-header">
+              <h3>🏆 Top 5 Productos Más Vendidos</h3>
+            </div>
+            <div className="top-productos-chart">
+              {topProductos.length > 0 ? (
+                topProductos.map((producto, index) => {
+                  const maxCantidad = Math.max(...topProductos.map(p => p.cantidad));
+                  const porcentaje = (producto.cantidad / maxCantidad) * 100;
+                  
+                  return (
+                    <div key={index} className="producto-bar-item">
+                      <div className="producto-nombre-chart" title={producto.nombre}>
+                        {producto.nombre}
+                      </div>
+                      <div className="producto-bar-container">
+                        <div 
+                          className="producto-bar-fill" 
+                          style={{ width: `${porcentaje}%` }}
+                          title={`${producto.cantidad} unidades - Q${producto.total.toFixed(2)}`}
+                        >
+                          <span className="producto-cantidad">{producto.cantidad}</span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <p style={{ textAlign: 'center', color: '#6b7280' }}>No hay datos disponibles</p>
+              )}
+            </div>
+          </div>
+
+          {/* Ventas por Categoría */}
+          <div className="content-card">
+            <div className="card-header">
+              <h3>📊 Ventas por Categoría</h3>
+            </div>
+            <div className="categorias-chart">
+              {ventasPorCategoria.length > 0 ? (
+                ventasPorCategoria.map((categoria, index) => {
+                  const colores = ['#667eea', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+                  const color = colores[index % colores.length];
+                  
+                  return (
+                    <div key={index} className="categoria-item">
+                      <div className="categoria-info">
+                        <div className="categoria-color" style={{ backgroundColor: color }}></div>
+                        <span className="categoria-nombre">{categoria.categoria}</span>
+                      </div>
+                      <div className="categoria-stats">
+                        <span className="categoria-porcentaje">{categoria.porcentaje.toFixed(1)}%</span>
+                        <span className="categoria-total">Q{categoria.total.toFixed(2)}</span>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <p style={{ textAlign: 'center', color: '#6b7280' }}>No hay datos disponibles</p>
+              )}
             </div>
           </div>
         </div>
