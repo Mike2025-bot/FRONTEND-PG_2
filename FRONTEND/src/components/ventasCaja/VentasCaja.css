@@ -1433,3 +1433,174 @@ body.dark-mode .password-toggle-icon:hover {
   font-weight: 600;
   font-size: 0.95em;
 }
+
+/* ===== MODO OSCURO PARA VENTAS CAJA ===== */
+body.dark-mode .ventas-container {
+  background: #222831;
+  color: #EEEEEE;
+}
+
+body.dark-mode .ventas-header {
+  background: #31363F;
+  color: #EEEEEE;
+}
+
+body.dark-mode .panel-izquierdo-ventas,
+body.dark-mode .panel-central-ventas,
+body.dark-mode .panel-derecho-ventas {
+  background: #31363F;
+  border-color: #393E46;
+  color: #EEEEEE;
+}
+
+/* Labels en modo oscuro */
+body.dark-mode .cantidad-section label,
+body.dark-mode .cajero-section label {
+  color: #EEEEEE;
+}
+
+/* Input cajero en modo oscuro */
+body.dark-mode .input-cajero {
+  background: #393E46;
+  color: #EEEEEE;
+  border-color: #4a5568;
+}
+
+/* Tabla de ventas en modo oscuro */
+body.dark-mode .tabla-ventas thead {
+  background: #00ADB5;
+  color: #FFFFFF;
+}
+
+body.dark-mode .tabla-ventas tbody tr {
+  color: #EEEEEE;
+}
+
+body.dark-mode .tabla-ventas tbody tr:hover {
+  background: #393E46;
+}
+
+body.dark-mode .tabla-ventas th,
+body.dark-mode .tabla-ventas td {
+  border-bottom-color: #393E46;
+}
+
+/* Totales en modo oscuro */
+body.dark-mode .totales-section {
+  background: #393E46;
+}
+
+body.dark-mode .total-item label {
+  color: #EEEEEE;
+}
+
+/* Modal de búsqueda en modo oscuro */
+body.dark-mode .modal-busqueda-productos {
+  background: #31363F;
+  color: #EEEEEE;
+}
+
+body.dark-mode .modal-busqueda-header {
+  background: linear-gradient(135deg, #00ADB5 0%, #008a8a 100%);
+}
+
+body.dark-mode .modal-busqueda-barra {
+  background: #393E46;
+  border-bottom-color: #4a5568;
+}
+
+body.dark-mode .tabla-productos-modal thead {
+  background: #00ADB5;
+  color: #FFFFFF;
+}
+
+body.dark-mode .tabla-productos-modal tbody tr {
+  color: #EEEEEE;
+  border-bottom-color: #393E46;
+}
+
+body.dark-mode .tabla-productos-modal tbody tr:hover {
+  background: #393E46;
+}
+
+body.dark-mode .tabla-productos-modal tbody tr.fila-seleccionada {
+  background: #00ADB5;
+  color: #FFFFFF;
+}
+
+body.dark-mode .modal-busqueda-footer {
+  background: #393E46;
+}
+
+/* Dropdown categorías en modo oscuro */
+body.dark-mode .dropdown-menu-categorias {
+  background: #31363F;
+  border-color: #00ADB5;
+}
+
+body.dark-mode .dropdown-item {
+  color: #EEEEEE;
+  border-bottom-color: #393E46;
+}
+
+body.dark-mode .dropdown-item:hover {
+  background: #393E46;
+}
+
+body.dark-mode .dropdown-item.activo {
+  background: #00ADB5;
+  color: #FFFFFF;
+}
+
+/* Modal de configuración en modo oscuro */
+body.dark-mode .modal-configuracion {
+  background: #31363F;
+  color: #EEEEEE;
+}
+
+body.dark-mode .config-field label {
+  color: #EEEEEE;
+}
+
+body.dark-mode .input-config {
+  background: #393E46;
+  color: #EEEEEE;
+  border-color: #4a5568;
+}
+
+body.dark-mode .config-info {
+  background: #393E46;
+  border-left-color: #00ADB5;
+}
+
+body.dark-mode .config-info p {
+  color: #EEEEEE;
+}
+
+/* Modal cerrar caja en modo oscuro */
+body.dark-mode .modal-cerrar-caja {
+  background: #31363F;
+  color: #EEEEEE;
+}
+
+body.dark-mode .modal-cerrar-caja-body h3 {
+  color: #EEEEEE;
+}
+
+body.dark-mode .modal-cerrar-caja-body > p {
+  color: #B0B0B0;
+}
+
+body.dark-mode .cerrar-caja-info {
+  background: #393E46;
+  border-left-color: #00ADB5;
+}
+
+body.dark-mode .cerrar-caja-info p {
+  color: #EEEEEE;
+}
+
+body.dark-mode .cerrar-caja-info li {
+  color: #EEEEEE;
+}
+

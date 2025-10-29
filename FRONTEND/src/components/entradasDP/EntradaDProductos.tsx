@@ -221,7 +221,7 @@ const EntradaDProductos = () => {
       });
 
       if (response.ok) {
-        alert("Entrada registrada correctamente");
+        //alert("Entrada registrada correctamente");
         
         // ⭐ Actualizar el stock del producto seleccionado inmediatamente
         if (productoSeleccionado) {
