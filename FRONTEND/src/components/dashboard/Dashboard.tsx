@@ -56,6 +56,8 @@ const Dashboard = () => {
   const [ventasPorDia, setVentasPorDia] = useState<VentaDia[]>([]);
   const [periodoGrafico, setPeriodoGrafico] = useState<7 | 30 | 90>(7);
   const [cargando, setCargando] = useState<boolean>(true);
+  const [cargandoVentas, setCargandoVentas] = useState<boolean>(true);
+  const [cargandoProductos, setCargandoProductos] = useState<boolean>(true);
   const [fechaInicio, setFechaInicio] = useState<string>('');
   const [fechaFin, setFechaFin] = useState<string>('');
   const [usarRangoPersonalizado, setUsarRangoPersonalizado] = useState<boolean>(false);
@@ -68,18 +70,40 @@ const Dashboard = () => {
   useEffect(() => {
     const cargarProductos = async () => {
       try {
+        setCargandoProductos(true);
         const response = await fetch(`${API_URL}/api/productos`);
+        
+        if (!response.ok) {
+          throw new Error('Error al cargar productos');
+        }
+        
         const productos = await response.json();
+        
+        console.log('📦 Productos cargados:', productos.length);
+        console.log('📊 Datos de productos:', productos);
         
         // Calcular total de productos y stock total
         const stock = productos.reduce((sum: number, producto: any) => {
-          return sum + (producto.stock_actual || 0);
+          const stockActual = parseInt(producto.stock_actual) || 0;
+          const stockMinimo = parseInt(producto.stock_minimo) || 0;
+          console.log(`Producto: ${producto.nombre_producto}, Stock: ${stockActual}, Mínimo: ${stockMinimo}`);
+          return sum + stockActual;
         }, 0);
         
-        // Calcular productos con stock bajo
-        const stockBajo = productos.filter((producto: any) => 
-          (producto.stock_actual || 0) <= (producto.stock_minimo || 0)
-        ).length;
+        // Calcular productos con stock bajo (stock actual <= stock mínimo)
+        const stockBajo = productos.filter((producto: any) => {
+          const stockActual = parseInt(producto.stock_actual) || 0;
+          const stockMinimo = parseInt(producto.stock_minimo) || 0;
+          const tieneStockBajo = stockActual <= stockMinimo;
+          
+          if (tieneStockBajo) {
+            console.log(`⚠️ Stock bajo: ${producto.nombre_producto} (${stockActual} <= ${stockMinimo})`);
+          }
+          
+          return tieneStockBajo;
+        }).length;
+        
+        console.log(`📊 Total productos con stock bajo: ${stockBajo}`);
         
         // Obtener los 5 productos más recientes
         const recientes = productos
@@ -97,8 +121,20 @@ const Dashboard = () => {
         setStockTotal(stock);
         setProductosStockBajo(stockBajo);
         setProductosRecientes(recientes);
+        
+        console.log(`✅ Productos cargados: ${productos.length}`);
+        console.log(`✅ Stock total: ${stock}`);
+        console.log(`✅ Productos con stock bajo: ${stockBajo}`);
+        
       } catch (error) {
         console.error('❌ Error al cargar productos:', error);
+        // Establecer valores por defecto en caso de error
+        setTotalProductos(0);
+        setStockTotal(0);
+        setProductosStockBajo(0);
+        setProductosRecientes([]);
+      } finally {
+        setCargandoProductos(false);
       }
     };
 
@@ -200,9 +236,16 @@ const Dashboard = () => {
   useEffect(() => {
     const cargarVentas = async () => {
       try {
-        setCargando(true);
+        setCargandoVentas(true);
         const response = await fetch(`${API_URL}/api/ventas`);
+        
+        if (!response.ok) {
+          throw new Error('Error al cargar ventas');
+        }
+        
         const ventas = await response.json();
+        
+        console.log('💰 Ventas cargadas:', ventas.length);
         
         // Calcular total de ventas
         const total = ventas.reduce((sum: number, venta: any) => {
@@ -227,9 +270,19 @@ const Dashboard = () => {
         }, 0);
         
         setVentasMesAnterior(totalMesAnterior);
+        
+        console.log(`✅ Ventas totales: Q${total.toFixed(2)}`);
+        console.log(`✅ Total de ventas: ${ventas.length}`);
+        console.log(`✅ Ventas mes anterior: Q${totalMesAnterior.toFixed(2)}`);
+        
       } catch (error) {
         console.error('Error al cargar ventas:', error);
+        // Establecer valores por defecto en caso de error
+        setVentasTotales(0);
+        setTotalVentas(0);
+        setVentasMesAnterior(0);
       } finally {
+        setCargandoVentas(false);
         setCargando(false);
       }
     };
@@ -440,7 +493,7 @@ const Dashboard = () => {
     {
       id: 'ventas',
       titulo: 'Ventas Totales',
-      valor: cargando ? 'Cargando...' : `Q${ventasTotales.toFixed(2)}`,
+      valor: cargandoVentas ? 'Cargando...' : `Q${ventasTotales.toFixed(2)}`,
       cambio: ventasMesAnterior > 0 ? `${calcularCambio() >= 0 ? '+' : ''}${calcularCambio().toFixed(1)}% vs mes anterior` : `${totalVentas} ventas`,
       porcentaje: calcularCambio(),
       icono: '💰',
@@ -449,8 +502,8 @@ const Dashboard = () => {
     {
       id: 'productos',
       titulo: 'Productos',
-      valor: `${totalProductos}`,
-      cambio: `${stockTotal} unidades en stock`,
+      valor: cargandoProductos ? 'Cargando...' : `${totalProductos}`,
+      cambio: cargandoProductos ? 'Calculando...' : `${stockTotal.toLocaleString()} unidades en stock`,
       porcentaje: 8.2,
       icono: '📦',
       color: '#3b82f6'
@@ -458,14 +511,13 @@ const Dashboard = () => {
     {
       id: 'stock-bajo',
       titulo: 'Stock Bajo',
-      valor: `${productosStockBajo}`,
-      cambio: 'Requieren reposición',
+      valor: cargandoProductos ? 'Cargando...' : `${productosStockBajo}`,
+      cambio: productosStockBajo > 0 ? 'Requieren reposición' : 'Todo en orden',
       porcentaje: productosStockBajo > 0 ? -10 : 0,
       icono: '⚠️',
       color: '#ef4444'
     }
   ];
-
 
   return (
     <div className="dashboard">
@@ -709,70 +761,37 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Gráficos adicionales */}
-        <div className="content-grid">
-          {/* Top 5 Productos Más Vendidos */}
-          <div className="content-card">
-            <div className="card-header">
-              <h3>🏆 Top 5 Productos Más Vendidos</h3>
-            </div>
-            <div className="top-productos-chart">
-              {topProductos.length > 0 ? (
-                topProductos.map((producto, index) => {
-                  const maxCantidad = Math.max(...topProductos.map(p => p.cantidad));
-                  const porcentaje = (producto.cantidad / maxCantidad) * 100;
-                  
-                  return (
-                    <div key={index} className="producto-bar-item">
-                      <div className="producto-nombre-chart" title={producto.nombre}>
-                        {producto.nombre}
-                      </div>
-                      <div className="producto-bar-container">
-                        <div 
-                          className="producto-bar-fill" 
-                          style={{ width: `${porcentaje}%` }}
-                          title={`${producto.cantidad} unidades - Q${producto.total.toFixed(2)}`}
-                        >
-                          <span className="producto-cantidad">{producto.cantidad}</span>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })
-              ) : (
-                <p style={{ textAlign: 'center', color: '#6b7280' }}>No hay datos disponibles</p>
-              )}
-            </div>
+        {/* Top 5 Productos Más Vendidos - Contenedor expandido */}
+        <div className="content-card full-width">
+          <div className="card-header">
+            <h3>🏆 Top 5 Productos Más Vendidos</h3>
           </div>
-
-          {/* Ventas por Categoría */}
-          <div className="content-card">
-            <div className="card-header">
-              <h3>📊 Ventas por Categoría</h3>
-            </div>
-            <div className="categorias-chart">
-              {ventasPorCategoria.length > 0 ? (
-                ventasPorCategoria.map((categoria, index) => {
-                  const colores = ['#667eea', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
-                  const color = colores[index % colores.length];
-                  
-                  return (
-                    <div key={index} className="categoria-item">
-                      <div className="categoria-info">
-                        <div className="categoria-color" style={{ backgroundColor: color }}></div>
-                        <span className="categoria-nombre">{categoria.categoria}</span>
-                      </div>
-                      <div className="categoria-stats">
-                        <span className="categoria-porcentaje">{categoria.porcentaje.toFixed(1)}%</span>
-                        <span className="categoria-total">Q{categoria.total.toFixed(2)}</span>
+          <div className="top-productos-chart expanded">
+            {topProductos.length > 0 ? (
+              topProductos.map((producto, index) => {
+                const maxCantidad = Math.max(...topProductos.map(p => p.cantidad));
+                const porcentaje = (producto.cantidad / maxCantidad) * 100;
+                
+                return (
+                  <div key={index} className="producto-bar-item expanded">
+                    <div className="producto-nombre-chart expanded" title={producto.nombre}>
+                      {producto.nombre}
+                    </div>
+                    <div className="producto-bar-container expanded">
+                      <div 
+                        className="producto-bar-fill expanded" 
+                        style={{ width: `${porcentaje}%` }}
+                        title={`${producto.cantidad} unidades - Q${producto.total.toFixed(2)}`}
+                      >
+                        <span className="producto-cantidad expanded">{producto.cantidad} unidades - Q${producto.total.toFixed(2)}</span>
                       </div>
                     </div>
-                  );
-                })
-              ) : (
-                <p style={{ textAlign: 'center', color: '#6b7280' }}>No hay datos disponibles</p>
-              )}
-            </div>
+                  </div>
+                );
+              })
+            ) : (
+              <p style={{ textAlign: 'center', color: '#6b7280', padding: '2rem' }}>No hay datos disponibles</p>
+            )}
           </div>
         </div>
       </div>
@@ -780,4 +799,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard; 
+export default Dashboard;
