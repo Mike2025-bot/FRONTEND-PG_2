@@ -15,7 +15,6 @@ interface Movimiento {
   nombre_usuario: string;
 }
 
-
 const MovimientosP = () => {
   const [movimientos, setMovimientos] = useState<Movimiento[]>([]);
   const [movimientosOriginales, setMovimientosOriginales] = useState<Movimiento[]>([]);
@@ -27,21 +26,17 @@ const MovimientosP = () => {
     cargarMovimientos();
   }, []);
 
-  // Búsqueda automática en tiempo real
+  // 🔍 Búsqueda automática en tiempo real
   useEffect(() => {
-    // Si no hay datos originales, no hacer nada
-    if (movimientosOriginales.length === 0) {
-      return;
-    }
+    if (movimientosOriginales.length === 0) return;
 
-    // Si no hay búsqueda, mostrar todos
     if (busqueda.trim() === "") {
       setMovimientos(movimientosOriginales);
       return;
     }
 
     const busquedaLower = busqueda.toLowerCase().trim();
-    
+
     const filtrados = movimientosOriginales.filter((m) => {
       try {
         const id = m.id_movimiento?.toString() || "";
@@ -51,7 +46,7 @@ const MovimientosP = () => {
         const tipo = m.tipo_movimiento?.toLowerCase() || "";
         const cantidad = m.cantidad?.toString() || "";
         const stock = m.stock_resultante?.toString() || "";
-        
+
         return (
           id.includes(busquedaLower) ||
           producto.includes(busquedaLower) ||
@@ -66,7 +61,7 @@ const MovimientosP = () => {
         return false;
       }
     });
-    
+
     setMovimientos(filtrados);
   }, [busqueda, movimientosOriginales]);
 
@@ -75,25 +70,21 @@ const MovimientosP = () => {
       const response = await fetch(`${API_URL}/api/movimientos`);
       const data = await response.json();
       setMovimientos(data);
-      setMovimientosOriginales(data); // Guardar copia original para filtros
+      setMovimientosOriginales(data);
     } catch (error) {
       console.error("Error al cargar movimientos:", error);
     }
   };
 
-  // Función para filtrar por rango de fechas
+  // 📅 Filtrar por rango de fechas
   const filtrarPorFechas = () => {
     if (!fechaInicio || !fechaFin) {
       alert("⚠️ Debes seleccionar ambas fechas (inicio y fin)");
       return;
     }
 
-    // Crear fechas en hora local (no UTC)
-    //const [yearInicio, mesInicio, diaInicio] = fechaInicio.split('-').map(Number);
-    //const [yearFin, mesFin, diaFin] = fechaFin.split('-').map(Number);
-    
-    //const inicio = new Date(yearInicio, mesInicio - 1, diaInicio, 0, 0, 0, 0);
-    //const fin = new Date(yearFin, mesFin - 1, diaFin, 23, 59, 59, 999);
+    const inicio = new Date(fechaInicio);
+    const fin = new Date(fechaFin);
 
     if (inicio > fin) {
       alert("⚠️ La fecha de inicio no puede ser mayor a la fecha fin");
@@ -101,14 +92,14 @@ const MovimientosP = () => {
     }
 
     const filtrados = movimientosOriginales.filter((m) => {
-      //const fechaMovimiento = new Date(m.fecha);
+      const fechaMovimiento = new Date(m.fecha);
       return fechaMovimiento >= inicio && fechaMovimiento <= fin;
     });
 
     setMovimientos(filtrados);
   };
 
-  // Función para limpiar filtros
+  // 🔄 Limpiar filtros
   const limpiarFiltros = () => {
     setBusqueda("");
     setFechaInicio("");
@@ -116,28 +107,23 @@ const MovimientosP = () => {
     setMovimientos(movimientosOriginales);
   };
 
-  // Función para eliminar movimientos por rango de fechas
+  // 🗑️ Eliminar movimientos por rango de fechas
   const eliminarMovimientosPorFecha = async () => {
     if (!fechaInicio || !fechaFin) {
       alert("⚠️ Debes seleccionar ambas fechas (inicio y fin) para eliminar");
       return;
     }
 
-    // Crear fechas en hora local (no UTC)
-    //const [yearInicio, mesInicio, diaInicio] = fechaInicio.split('-').map(Number);
-    //const [yearFin, mesFin, diaFin] = fechaFin.split('-').map(Number);
-    
-    //const inicio = new Date(yearInicio, mesInicio - 1, diaInicio, 0, 0, 0, 0);
-    //const fin = new Date(yearFin, mesFin - 1, diaFin, 23, 59, 59, 999);
+    const inicio = new Date(fechaInicio);
+    const fin = new Date(fechaFin);
 
     if (inicio > fin) {
       alert("⚠️ La fecha de inicio no puede ser mayor a la fecha fin");
       return;
     }
 
-    // Obtener movimientos en el rango
     const movimientosEnRango = movimientosOriginales.filter((m) => {
-      //const fechaMovimiento = new Date(m.fecha);
+      const fechaMovimiento = new Date(m.fecha);
       return fechaMovimiento >= inicio && fechaMovimiento <= fin;
     });
 
@@ -147,22 +133,17 @@ const MovimientosP = () => {
     }
 
     try {
-      // Eliminar cada movimiento
       let eliminados = 0;
       let errores = 0;
 
       for (const movimiento of movimientosEnRango) {
         try {
-          const response = await fetch(
-            `${API_URL}/api/movimientos/${movimiento.id_movimiento}`,
-            { method: "DELETE" }
-          );
+          const response = await fetch(`${API_URL}/api/movimientos/${movimiento.id_movimiento}`, {
+            method: "DELETE",
+          });
 
-          if (response.ok) {
-            eliminados++;
-          } else {
-            errores++;
-          }
+          if (response.ok) eliminados++;
+          else errores++;
         } catch (error) {
           console.error(`Error al eliminar movimiento ${movimiento.id_movimiento}:`, error);
           errores++;
@@ -171,8 +152,8 @@ const MovimientosP = () => {
 
       if (eliminados > 0) {
         alert(`✅ Se eliminaron ${eliminados} movimiento(s) correctamente${errores > 0 ? `\n❌ ${errores} error(es)` : ""}`);
-        cargarMovimientos(); // Recargar la lista
-        limpiarFiltros(); // Limpiar filtros
+        cargarMovimientos();
+        limpiarFiltros();
       } else {
         alert("❌ No se pudo eliminar ningún movimiento");
       }
@@ -184,20 +165,14 @@ const MovimientosP = () => {
 
   return (
     <div className="movimientos-productos">
-      {/* Header */}
       <div className="movimientos-header">
-        <h1>🔄REGISTRO DE MOVIMIENTO DE PRODUCTOS</h1>
-        <div className="header-buttons">
-        </div>
+        <h1>🔄 REGISTRO DE MOVIMIENTO DE PRODUCTOS</h1>
       </div>
 
       <div className="movimientos-content">
-        {/* Panel derecho - formulario */}
         <div className="panel-derechoMov">
-          
-          {/* Buscador y filtros */}
+          {/* Filtros y búsqueda */}
           <div className="filtros-container">
-            {/* Buscador inteligente */}
             <div className="busqueda-container">
               <input
                 type="text"
@@ -213,7 +188,6 @@ const MovimientosP = () => {
               )}
             </div>
 
-            {/* Filtros por fecha */}
             <div className="filtros-fecha">
               <div className="fecha-grupo">
                 <label>📅 Fecha Inicio:</label>
@@ -233,19 +207,13 @@ const MovimientosP = () => {
                   className="input-fecha"
                 />
               </div>
-              <button onClick={filtrarPorFechas} className="btn-filtrar">
-                🔍 Filtrar
-              </button>
-              <button onClick={limpiarFiltros} className="btn-limpiar-filtros">
-                🔄 Limpiar Filtros
-              </button>
-              <button onClick={eliminarMovimientosPorFecha} className="btn-eliminar-rango">
-                🗑️ Eliminar Rango
-              </button>
+              <button onClick={filtrarPorFechas} className="btn-filtrar">🔍 Filtrar</button>
+              <button onClick={limpiarFiltros} className="btn-limpiar-filtros">🔄 Limpiar Filtros</button>
+              <button onClick={eliminarMovimientosPorFecha} className="btn-eliminar-rango">🗑️ Eliminar Rango</button>
             </div>
           </div>
 
-          {/* Historial de movimientos */}
+          {/* 🧾 Historial */}
           <h2>Historial de Movimientos ({movimientos.length})</h2>
           <div className="tabla-scroll">
             <table className="tabla-movimientos">
@@ -263,7 +231,7 @@ const MovimientosP = () => {
               <tbody>
                 {movimientos.length === 0 ? (
                   <tr>
-                    <td colSpan={7} style={{ textAlign: 'center', padding: '2em' }}>
+                    <td colSpan={7} style={{ textAlign: "center", padding: "2em" }}>
                       No hay movimientos registrados
                     </td>
                   </tr>
@@ -272,7 +240,8 @@ const MovimientosP = () => {
                     <tr key={m.id_movimiento}>
                       <td>{m.id_movimiento}</td>
                       <td>{m.nombre_producto}</td>
-                      <td>{new Date(m.fecha).toLocaleString('es-GT')}</td>
+                      {/* 👇 Muestra solo la fecha */}
+                      <td>{new Date(m.fecha).toLocaleDateString("es-GT")}</td>
                       <td>
                         <span className={`texto-origen ${m.tipo_movimiento.toLowerCase()}`}>
                           {m.origen_movimiento}
