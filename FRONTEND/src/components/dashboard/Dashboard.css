@@ -298,6 +298,9 @@
 .actividad-item:hover {
   background: rgba(102, 126, 234, 0.1);
 }
+body.dark-mode .actividad-item:hover {
+  background: #232a36;
+}
 
 .actividad-icon {
   width: 32px;
@@ -533,6 +536,236 @@
   text-align: center;
 }
 
+/* Responsive */
+@media (max-width: 1024px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 1rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .stat-card {
+    padding: 1rem;
+  }
+  
+  .content-card {
+    padding: 1rem;
+  }
+  
+  .chart-bars {
+    gap: 0.5rem;
+  }
+  
+  .chart-bar {
+    width: 30px;
+  }
+  
+  .chart-labels {
+    gap: 0.5rem;
+  }
+  
+  .chart-labels span {
+    width: 30px;
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .stat-value {
+    font-size: 1.5rem;
+  }
+  
+  .productos-table {
+    font-size: 0.75rem;
+  }
+  
+  .chart-bars {
+    gap: 0.25rem;
+  }
+  
+  .chart-bar {
+    width: 25px;
+  }
+  
+  .chart-labels span {
+    width: 25px;
+    font-size: 0.7rem;
+  }
+  
+  .header-buttons {
+    flex-wrap: wrap;
+  }
+}
+
+/* ==================== MODO OSCURO ==================== */
+
+/* Dashboard general */
+body.dark-mode .dashboard {
+  background: #1a1d24;
+}
+
+/* Header modo oscuro */
+body.dark-mode .dashboard-top-header {
+  background: #31363F;
+  color: #EEEEEE;
+}
+
+body.dark-mode .header-buttons button {
+  background: #00ADB5;
+  color: #EEEEEE;
+}
+
+body.dark-mode .header-buttons button:hover {
+  background: #00ADB5CC;
+}
+
+body.dark-mode .dashboard-subtitle {
+  color: #9ca3af;
+}
+
+/* Tarjetas de estadísticas */
+body.dark-mode .stat-card {
+  background: #222831;
+  border-color: #31363F;
+}
+
+body.dark-mode .stat-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .stat-title {
+  color: #9ca3af;
+}
+
+body.dark-mode .stat-value {
+  color: #EEEEEE;
+}
+
+/* Tarjetas de contenido */
+body.dark-mode .content-card {
+  background: #222831;
+  border-color: #31363F;
+}
+
+body.dark-mode .card-header h3 {
+  color: #EEEEEE;
+}
+
+/* Tabla de productos */
+body.dark-mode .productos-table th {
+  color: #EEEEEE;
+  border-bottom-color: #31363F;
+}
+
+body.dark-mode .productos-table td {
+  border-bottom-color: #2a2e35;
+}
+
+body.dark-mode .producto-nombre {
+  color: #EEEEEE;
+}
+
+body.dark-mode .producto-categoria {
+  color: #9ca3af;
+}
+
+/* Actividades */
+body.dark-mode .actividad-icon {
+  background: #31363F;
+}
+
+body.dark-mode .actividad-texto {
+  color: #EEEEEE;
+}
+
+body.dark-mode .actividad-tiempo {
+  color: #6b7280;
+}
+
+/* Selector de fechas */
+body.dark-mode .date-selector {
+  border-bottom-color: #31363F;
+}
+
+body.dark-mode .date-input-group label {
+  color: #EEEEEE;
+}
+
+body.dark-mode .date-input {
+  background: #31363F;
+  border-color: #3a3f47;
+  color: #EEEEEE;
+}
+
+body.dark-mode .date-input:focus {
+  border-color: #00ADB5;
+  box-shadow: 0 0 0 3px rgba(0, 173, 181, 0.1);
+}
+
+/* Botones del gráfico */
+body.dark-mode .chart-btn {
+  border-color: #31363F;
+  color: #9ca3af;
+  background: #222831;
+}
+
+body.dark-mode .chart-btn:hover {
+  background: #31363F;
+}
+
+body.dark-mode .chart-btn.active {
+  background: #00ADB5;
+  color: #EEEEEE;
+  border-color: #00ADB5;
+}
+
+body.dark-mode .chart-labels {
+  color: #9ca3af;
+}
+
+/* Top productos */
+body.dark-mode .producto-nombre-chart {
+  color: #EEEEEE;
+}
+
+body.dark-mode .producto-bar-container {
+  background: #31363F;
+}
+
+body.dark-mode .producto-cantidad {
+  color: white;
+}
+
+/* Categorías */
+body.dark-mode .categoria-item {
+  background: #31363F;
+}
+
+body.dark-mode .categoria-item:hover {
+  background: #3a3f47;
+}
+
+body.dark-mode .categoria-nombre {
+  color: #EEEEEE;
+}
+
+body.dark-mode .categoria-total {
+  color: #9ca3af;
+}
+
 /* Gráficos adicionales */
 .top-productos-chart {
   display: flex;
@@ -642,355 +875,6 @@
 .categoria-total {
   font-size: 0.875rem;
   color: #6b7280;
-}
-
-/* Estilos para el contenedor expandido de Top Productos */
-.top-productos-chart.expanded {
-  gap: 1rem;
-  padding: 0.5rem;
-}
-
-.producto-bar-item.expanded {
-  grid-template-columns: 200px 1fr;
-  gap: 1rem;
-  padding: 0.75rem;
-  background: #f9fafb;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-body.dark-mode .producto-bar-item.expanded {
-  background: #31363F;
-}
-
-.producto-bar-item.expanded:hover {
-  background: #f3f4f6;
-  transform: translateX(4px);
-}
-
-body.dark-mode .producto-bar-item.expanded:hover {
-  background: #3a3f47;
-}
-
-.producto-nombre-chart.expanded {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #374151;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-body.dark-mode .producto-nombre-chart.expanded {
-  color: #EEEEEE;
-}
-
-.producto-bar-container.expanded {
-  height: 35px;
-  background: #f3f4f6;
-  border-radius: 8px;
-  overflow: visible;
-  position: relative;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-body.dark-mode .producto-bar-container.expanded {
-  background: #2a2e35;
-}
-
-.producto-bar-fill.expanded {
-  height: 100%;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-  border-radius: 8px;
-  transition: all 0.5s ease;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding-right: 1rem;
-  min-width: 60px;
-  position: relative;
-}
-
-.producto-bar-fill.expanded:hover {
-  background: linear-gradient(90deg, #5a67d8 0%, #6b46c1 100%);
-  transform: scale(1.02);
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
-}
-
-.producto-cantidad.expanded {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: white;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-/* Responsive */
-@media (max-width: 1024px) {
-  .content-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 768px) {
-  .dashboard {
-    padding: 1rem;
-  }
-  
-  .stats-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  .stat-card {
-    padding: 1rem;
-  }
-  
-  .content-card {
-    padding: 1rem;
-  }
-  
-  .chart-bars {
-    gap: 0.5rem;
-  }
-  
-  .chart-bar {
-    width: 30px;
-  }
-  
-  .chart-labels {
-    gap: 0.5rem;
-  }
-  
-  .chart-labels span {
-    width: 30px;
-    font-size: 0.75rem;
-  }
-  
-  .producto-bar-item.expanded {
-    grid-template-columns: 120px 1fr;
-    gap: 0.5rem;
-    padding: 0.5rem;
-  }
-  
-  .producto-nombre-chart.expanded {
-    font-size: 0.8rem;
-  }
-  
-  .producto-bar-container.expanded {
-    height: 30px;
-  }
-  
-  .producto-cantidad.expanded {
-    font-size: 0.7rem;
-    padding-right: 0.5rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .dashboard-header h1 {
-    font-size: 1.5rem;
-  }
-  
-  .stat-value {
-    font-size: 1.5rem;
-  }
-  
-  .productos-table {
-    font-size: 0.75rem;
-  }
-  
-  .chart-bars {
-    gap: 0.25rem;
-  }
-  
-  .chart-bar {
-    width: 25px;
-  }
-  
-  .chart-labels span {
-    width: 25px;
-    font-size: 0.7rem;
-  }
-  
-  .header-buttons {
-    flex-wrap: wrap;
-  }
-  
-  .producto-bar-item.expanded {
-    grid-template-columns: 100px 1fr;
-  }
-  
-  .producto-nombre-chart.expanded {
-    font-size: 0.75rem;
-  }
-  
-  .producto-cantidad.expanded {
-    font-size: 0.65rem;
-  }
-}
-
-/* ==================== MODO OSCURO ==================== */
-
-/* Dashboard general */
-body.dark-mode .dashboard {
-  background: #1a1d24;
-}
-
-/* Header modo oscuro */
-body.dark-mode .dashboard-top-header {
-  background: #31363F;
-  color: #EEEEEE;
-}
-
-body.dark-mode .header-buttons button {
-  background: #00ADB5;
-  color: #EEEEEE;
-}
-
-body.dark-mode .header-buttons button:hover {
-  background: #00ADB5CC;
-}
-
-body.dark-mode .dashboard-subtitle {
-  color: #9ca3af;
-}
-
-/* Tarjetas de estadísticas */
-body.dark-mode .stat-card {
-  background: #222831;
-  border-color: #31363F;
-}
-
-body.dark-mode .stat-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-body.dark-mode .stat-title {
-  color: #9ca3af;
-}
-
-body.dark-mode .stat-value {
-  color: #EEEEEE;
-}
-
-/* Tarjetas de contenido */
-body.dark-mode .content-card {
-  background: #222831;
-  border-color: #31363F;
-}
-
-body.dark-mode .card-header h3 {
-  color: #EEEEEE;
-}
-
-/* Tabla de productos */
-body.dark-mode .productos-table th {
-  color: #EEEEEE;
-  border-bottom-color: #31363F;
-}
-
-body.dark-mode .productos-table td {
-  border-bottom-color: #2a2e35;
-}
-
-body.dark-mode .producto-nombre {
-  color: #EEEEEE;
-}
-
-body.dark-mode .producto-categoria {
-  color: #9ca3af;
-}
-
-/* Actividades */
-body.dark-mode .actividad-item {
-  background: transparent;
-}
-
-body.dark-mode .actividad-item:hover {
-  background: #232a36;
-}
-
-body.dark-mode .actividad-icon {
-  background: #31363F;
-}
-
-body.dark-mode .actividad-texto {
-  color: #EEEEEE;
-}
-
-body.dark-mode .actividad-tiempo {
-  color: #6b7280;
-}
-
-/* Selector de fechas */
-body.dark-mode .date-selector {
-  border-bottom-color: #31363F;
-}
-
-body.dark-mode .date-input-group label {
-  color: #EEEEEE;
-}
-
-body.dark-mode .date-input {
-  background: #31363F;
-  border-color: #3a3f47;
-  color: #EEEEEE;
-}
-
-body.dark-mode .date-input:focus {
-  border-color: #00ADB5;
-  box-shadow: 0 0 0 3px rgba(0, 173, 181, 0.1);
-}
-
-/* Botones del gráfico */
-body.dark-mode .chart-btn {
-  border-color: #31363F;
-  color: #9ca3af;
-  background: #222831;
-}
-
-body.dark-mode .chart-btn:hover {
-  background: #31363F;
-}
-
-body.dark-mode .chart-btn.active {
-  background: #00ADB5;
-  color: #EEEEEE;
-  border-color: #00ADB5;
-}
-
-body.dark-mode .chart-labels {
-  color: #9ca3af;
-}
-
-/* Top productos */
-body.dark-mode .producto-nombre-chart {
-  color: #EEEEEE;
-}
-
-body.dark-mode .producto-bar-container {
-  background: #31363F;
-}
-
-body.dark-mode .producto-cantidad {
-  color: white;
-}
-
-/* Categorías */
-body.dark-mode .categoria-item {
-  background: #31363F;
-}
-
-body.dark-mode .categoria-item:hover {
-  background: #3a3f47;
-}
-
-body.dark-mode .categoria-nombre {
-  color: #EEEEEE;
-}
-
-body.dark-mode .categoria-total {
-  color: #9ca3af;
 }
 
 /* Animaciones de entrada */
