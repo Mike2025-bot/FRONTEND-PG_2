@@ -89,11 +89,11 @@ const MovimientosP = () => {
     }
 
     // Crear fechas en hora local (no UTC)
-    const [yearInicio, mesInicio, diaInicio] = fechaInicio.split('-').map(Number);
-    const [yearFin, mesFin, diaFin] = fechaFin.split('-').map(Number);
+    //const [yearInicio, mesInicio, diaInicio] = fechaInicio.split('-').map(Number);
+    //const [yearFin, mesFin, diaFin] = fechaFin.split('-').map(Number);
     
-    const inicio = new Date(yearInicio, mesInicio - 1, diaInicio, 0, 0, 0, 0);
-    const fin = new Date(yearFin, mesFin - 1, diaFin, 23, 59, 59, 999);
+    //const inicio = new Date(yearInicio, mesInicio - 1, diaInicio, 0, 0, 0, 0);
+    //const fin = new Date(yearFin, mesFin - 1, diaFin, 23, 59, 59, 999);
 
     if (inicio > fin) {
       alert("⚠️ La fecha de inicio no puede ser mayor a la fecha fin");
@@ -101,7 +101,7 @@ const MovimientosP = () => {
     }
 
     const filtrados = movimientosOriginales.filter((m) => {
-      const fechaMovimiento = new Date(m.fecha);
+      //const fechaMovimiento = new Date(m.fecha);
       return fechaMovimiento >= inicio && fechaMovimiento <= fin;
     });
 
@@ -124,11 +124,11 @@ const MovimientosP = () => {
     }
 
     // Crear fechas en hora local (no UTC)
-    const [yearInicio, mesInicio, diaInicio] = fechaInicio.split('-').map(Number);
-    const [yearFin, mesFin, diaFin] = fechaFin.split('-').map(Number);
+    //const [yearInicio, mesInicio, diaInicio] = fechaInicio.split('-').map(Number);
+    //const [yearFin, mesFin, diaFin] = fechaFin.split('-').map(Number);
     
-    const inicio = new Date(yearInicio, mesInicio - 1, diaInicio, 0, 0, 0, 0);
-    const fin = new Date(yearFin, mesFin - 1, diaFin, 23, 59, 59, 999);
+    //const inicio = new Date(yearInicio, mesInicio - 1, diaInicio, 0, 0, 0, 0);
+    //const fin = new Date(yearFin, mesFin - 1, diaFin, 23, 59, 59, 999);
 
     if (inicio > fin) {
       alert("⚠️ La fecha de inicio no puede ser mayor a la fecha fin");
@@ -137,7 +137,7 @@ const MovimientosP = () => {
 
     // Obtener movimientos en el rango
     const movimientosEnRango = movimientosOriginales.filter((m) => {
-      const fechaMovimiento = new Date(m.fecha);
+      //const fechaMovimiento = new Date(m.fecha);
       return fechaMovimiento >= inicio && fechaMovimiento <= fin;
     });
 
