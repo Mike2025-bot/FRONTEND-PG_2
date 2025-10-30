@@ -6,7 +6,7 @@ interface Movimiento {
   id_movimiento: number;
   id_producto: number;
   nombre_producto: string;
-  fecha: string;
+  fecha: string; // Puede venir como '2025-10-29' o '2025-10-29T00:00:00.000Z'
   tipo_movimiento: "ENTRADA" | "SALIDA";
   cantidad: number;
   stock_resultante: number;
@@ -23,11 +23,37 @@ const MovimientosP = () => {
   const [fechaFin, setFechaFin] = useState("");
   const [cargando, setCargando] = useState(false);
 
+  // 🔧 Función para normalizar fechas (convertir a formato YYYY-MM-DD)
+  const normalizarFecha = (fechaString: string): string => {
+    if (!fechaString) return '';
+    
+    // Si ya está en formato YYYY-MM-DD, devolverlo tal cual
+    if (/^\d{4}-\d{2}-\d{2}$/.test(fechaString)) {
+      return fechaString;
+    }
+    
+    // Si tiene formato ISO (con Z o timezone), extraer solo la parte de la fecha
+    if (fechaString.includes('T')) {
+      return fechaString.split('T')[0];
+    }
+    
+    // Para cualquier otro caso, usar Date y formatear
+    const fecha = new Date(fechaString);
+    return fecha.toISOString().split('T')[0];
+  };
+
+  // 🔧 Función para formatear fecha para mostrar (sin cambiar zona horaria)
+  const formatearFechaParaMostrar = (fechaString: string): string => {
+    const fechaNormalizada = normalizarFecha(fechaString);
+    const [year, month, day] = fechaNormalizada.split('-');
+    return `${day}/${month}/${year}`;
+  };
+
   useEffect(() => {
     cargarMovimientos();
   }, []);
 
-  // 🔍 Búsqueda automática en tiempo real (solo en el cliente)
+  // 🔍 Búsqueda automática en tiempo real
   useEffect(() => {
     if (movimientosOriginales.length === 0) return;
 
@@ -79,20 +105,24 @@ const MovimientosP = () => {
       
       const data = await response.json();
       
-      // Debug detallado
-      console.log("✅ Datos recibidos de la API:", data);
-      console.log("📊 Total de movimientos recibidos:", data.length);
+      // Normalizar las fechas en los datos recibidos
+      const datosNormalizados = data.map((movimiento: Movimiento) => ({
+        ...movimiento,
+        fecha: normalizarFecha(movimiento.fecha)
+      }));
       
-      // Mostrar fechas únicas ordenadas
-      const fechasUnicas = [...new Set(data.map((m: Movimiento) => m.fecha))].sort();
-      console.log("📅 Fechas únicas en movimientos:", fechasUnicas);
+      console.log("✅ Datos recibidos y normalizados:", datosNormalizados);
+      
+      // Mostrar fechas únicas ordenadas (después de normalizar)
+      const fechasUnicas = [...new Set(datosNormalizados.map((m: Movimiento) => m.fecha))].sort();
+      console.log("📅 Fechas únicas en movimientos (normalizadas):", fechasUnicas);
       
       // Verificar específicamente el 29/10/2025
-      const movimientos29 = data.filter((m: Movimiento) => m.fecha === '2025-10-29');
+      const movimientos29 = datosNormalizados.filter((m: Movimiento) => m.fecha === '2025-10-29');
       console.log(`🔍 Movimientos del 2025-10-29: ${movimientos29.length}`, movimientos29);
 
       // Ordenar por fecha más reciente primero
-      const datosOrdenados = data.sort((a: Movimiento, b: Movimiento) => 
+      const datosOrdenados = datosNormalizados.sort((a: Movimiento, b: Movimiento) => 
         new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
       );
       
@@ -138,14 +168,25 @@ const MovimientosP = () => {
       }
 
       const data = await response.json();
-      console.log(`✅ Filtro completado: ${data.length} movimientos encontrados`);
       
-      if (data.length === 0) {
-        console.log("❌ No se encontraron movimientos en el rango especificado");
+      // Normalizar las fechas en los datos filtrados
+      const datosNormalizados = data.map((movimiento: Movimiento) => ({
+        ...movimiento,
+        fecha: normalizarFecha(movimiento.fecha)
+      }));
+      
+      console.log(`✅ Filtro completado: ${datosNormalizados.length} movimientos encontrados`);
+      console.log("📋 Movimientos filtrados:", datosNormalizados.map(m => ({
+        id: m.id_movimiento,
+        fecha: m.fecha,
+        producto: m.nombre_producto
+      })));
+      
+      if (datosNormalizados.length === 0) {
         alert("No se encontraron movimientos en el rango de fechas seleccionado");
       }
 
-      setMovimientos(data);
+      setMovimientos(datosNormalizados);
       
     } catch (error) {
       console.error("❌ Error al filtrar movimientos:", error);
@@ -189,7 +230,13 @@ const MovimientosP = () => {
         throw new Error(`Error HTTP: ${response.status}`);
       }
 
-      const movimientosEnRango = await response.json();
+      const data = await response.json();
+      
+      // Normalizar las fechas
+      const movimientosEnRango = data.map((movimiento: Movimiento) => ({
+        ...movimiento,
+        fecha: normalizarFecha(movimiento.fecha)
+      }));
 
       if (movimientosEnRango.length === 0) {
         alert("⚠️ No hay movimientos en el rango de fechas seleccionado");
@@ -343,7 +390,8 @@ const MovimientosP = () => {
                     <tr key={m.id_movimiento}>
                       <td>{m.id_movimiento}</td>
                       <td>{m.nombre_producto}</td>
-                      <td>{new Date(m.fecha).toLocaleDateString("es-GT")}</td>
+                      {/* Usar la función de formateo que no afecta la zona horaria */}
+                      <td>{formatearFechaParaMostrar(m.fecha)}</td>
                       <td>
                         <span className={`texto-origen ${m.tipo_movimiento.toLowerCase()}`}>
                           {m.origen_movimiento}
