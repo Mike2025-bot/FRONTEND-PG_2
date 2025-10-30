@@ -203,7 +203,7 @@ const Navbar: React.FC<NavbarProps> = ({ mostrarNotificaciones, setMostrarNotifi
     if (notif.id_producto && notif.nombre_producto) {
       try {
         // Obtener el producto completo desde la API para tener el precio_compra
-        const response = await fetch(`https://backend-pg2-3.onrender.com/api/productos`);
+        const response = await fetch(`https://backend-pg2-6.onrender.com/api/productos`);
         const productos = await response.json();
         const productoCompleto = productos.find((p: any) => p.id_producto === notif.id_producto);
         
