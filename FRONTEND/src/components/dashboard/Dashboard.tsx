@@ -337,98 +337,105 @@ const Dashboard = () => {
   }, []);
 
   // Cargar ventas por día para el gráfico
-  useEffect(() => {
-    const cargarVentasPorDia = async () => {
-      try {
-        const response = await fetch(`${API_URL}/api/ventas`);
-        const ventas = await response.json();
-        
-        let fechaLimite: Date;
-        let fechaFinal: Date;
-        
-        if (usarRangoPersonalizado && fechaInicio && fechaFin) {
-          // Usar rango personalizado
-          fechaLimite = new Date(fechaInicio);
-          fechaFinal = new Date(fechaFin);
-        } else {
-          // Usar periodo predefinido
-          const ahora = new Date();
-          fechaFinal = ahora;
-          fechaLimite = new Date();
-          fechaLimite.setDate(ahora.getDate() - periodoGrafico);
-        }
-        
-        // Filtrar ventas del periodo
-        const ventasPeriodo = ventas.filter((venta: any) => {
-          const fechaVenta = new Date(venta.fecha);
-          return fechaVenta >= fechaLimite && fechaVenta <= fechaFinal;
-        });
-        
-        // Calcular número de días
-        const diasDiferencia = Math.ceil((fechaFinal.getTime() - fechaLimite.getTime()) / (1000 * 60 * 60 * 24));
-        const numDias = usarRangoPersonalizado ? diasDiferencia : periodoGrafico;
-        
-        // Agrupar ventas por día
-        const ventasPorDiaMap: { [key: string]: number } = {};
-        
-        // Inicializar todos los días del periodo con 0
-        for (let i = 0; i < numDias; i++) {
-          const fecha = new Date(fechaLimite);
-          fecha.setDate(fechaLimite.getDate() + i);
-          const diaKey = fecha.toISOString().split('T')[0];
-          ventasPorDiaMap[diaKey] = 0;
-        }
-        
-        // Sumar ventas por día
-        ventasPeriodo.forEach((venta: any) => {
-          const fecha = new Date(venta.fecha);
-          const diaKey = fecha.toISOString().split('T')[0];
-          ventasPorDiaMap[diaKey] = (ventasPorDiaMap[diaKey] || 0) + parseFloat(venta.total || 0);
-        });
-        
-        // Convertir a array y formatear
-        const ventasArray: VentaDia[] = Object.entries(ventasPorDiaMap).map(([dia, total]) => {
-          const fecha = new Date(dia);
-          let diaFormateado = '';
-          
-          if (numDias <= 7) {
-            // Para 7 días o menos: Lun, Mar, Mié, etc.
-            const dias = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-            diaFormateado = dias[fecha.getDay()];
-          } else if (numDias <= 31) {
-            // Para hasta 31 días: DD/MM
-            diaFormateado = `${fecha.getDate()}/${fecha.getMonth() + 1}`;
-          } else {
-            // Para más días: DD/MM
-            diaFormateado = `${fecha.getDate()}/${fecha.getMonth() + 1}`;
-          }
-          
-          return { dia: diaFormateado, total, fecha: dia };
-        });
-        
-        setVentasPorDia(ventasArray);
-      } catch (error) {
-        console.error('Error al cargar ventas por día:', error);
+ // Cargar ventas por día para el gráfico
+useEffect(() => {
+  const cargarVentasPorDia = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/ventas`);
+      const ventas = await response.json();
+
+      let fechaLimite: Date;
+      let fechaFinal: Date;
+
+      if (usarRangoPersonalizado && fechaInicio && fechaFin) {
+        // Usar rango personalizado
+        fechaLimite = new Date(fechaInicio);
+        fechaFinal = new Date(fechaFin);
+      } else {
+        // Usar periodo predefinido
+        const ahora = new Date();
+        fechaFinal = ahora;
+        fechaLimite = new Date();
+        fechaLimite.setDate(ahora.getDate() - periodoGrafico);
       }
-    };
 
+      // Filtrar ventas del periodo
+      const ventasPeriodo = ventas.filter((venta: any) => {
+        const fechaVenta = new Date(venta.fecha);
+        return fechaVenta >= fechaLimite && fechaVenta <= fechaFinal;
+      });
+
+      // Calcular número de días
+      const diasDiferencia = Math.ceil(
+        (fechaFinal.getTime() - fechaLimite.getTime()) / (1000 * 60 * 60 * 24)
+      );
+      const numDias = usarRangoPersonalizado ? diasDiferencia : periodoGrafico;
+
+      // Agrupar ventas por día
+      const ventasPorDiaMap: { [key: string]: number } = {};
+
+      // Inicializar días del período con 0
+      for (let i = 0; i < numDias; i++) {
+        const fecha = new Date(fechaLimite);
+        fecha.setDate(fechaLimite.getDate() + i);
+
+        // ✅ convertir correctamente a formato local (sin desfase UTC)
+        const diaKey = `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(2, '0')}-${String(fecha.getDate()).padStart(2, '0')}`;
+        ventasPorDiaMap[diaKey] = 0;
+      }
+
+      // Sumar ventas por día
+      ventasPeriodo.forEach((venta: any) => {
+        const [anio, mes, diaNum] = venta.fecha.split('T')[0].split('-').map(Number);
+        const fechaLocal = new Date(anio, mes - 1, diaNum);
+        const diaKey = `${fechaLocal.getFullYear()}-${String(fechaLocal.getMonth() + 1).padStart(2, '0')}-${String(fechaLocal.getDate()).padStart(2, '0')}`;
+        ventasPorDiaMap[diaKey] = (ventasPorDiaMap[diaKey] || 0) + parseFloat(venta.total || 0);
+      });
+
+      // Convertir a array y formatear días correctamente
+      const ventasArray: VentaDia[] = Object.entries(ventasPorDiaMap).map(([dia, total]) => {
+        const [anio, mes, diaNum] = dia.split('-').map(Number);
+        const fechaLocal = new Date(anio, mes - 1, diaNum);
+
+        let diaFormateado = '';
+        const diasSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+
+        if (numDias <= 7) {
+          diaFormateado = diasSemana[fechaLocal.getDay()];
+        } else if (numDias <= 31) {
+          diaFormateado = `${fechaLocal.getDate()}/${fechaLocal.getMonth() + 1}`;
+        } else {
+          diaFormateado = `${fechaLocal.getDate()}/${fechaLocal.getMonth() + 1}`;
+        }
+
+        return { dia: diaFormateado, total, fecha: dia };
+      });
+
+      setVentasPorDia(ventasArray);
+    } catch (error) {
+      console.error('Error al cargar ventas por día:', error);
+    }
+  };
+
+  cargarVentasPorDia();
+
+  // Actualizar cada 30 segundos
+  const interval = setInterval(cargarVentasPorDia, 30000);
+
+  // Escuchar evento de actualización
+  const handleStockActualizado = () => {
     cargarVentasPorDia();
-    
-    // Actualizar cada 30 segundos
-    const interval = setInterval(cargarVentasPorDia, 30000);
-    
-    // Escuchar evento de actualización
-    const handleStockActualizado = () => {
-      cargarVentasPorDia();
-    };
+  };
 
-    window.addEventListener('stockActualizado', handleStockActualizado);
-    
-    return () => {
-      clearInterval(interval);
-      window.removeEventListener('stockActualizado', handleStockActualizado);
-    };
-  }, [periodoGrafico, usarRangoPersonalizado, fechaInicio, fechaFin]);
+  window.addEventListener('stockActualizado', handleStockActualizado);
+
+  return () => {
+    clearInterval(interval);
+    window.removeEventListener('stockActualizado', handleStockActualizado);
+  };
+}, [periodoGrafico, usarRangoPersonalizado, fechaInicio, fechaFin]);
+
+// --------------------*************************----------------------------------------------
 
   // Calcular porcentaje de cambio vs mes anterior
   const calcularCambio = () => {
