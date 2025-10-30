@@ -6,7 +6,7 @@ interface Movimiento {
   id_movimiento: number;
   id_producto: number;
   nombre_producto: string;
-  fecha: string;
+  fecha: string; // Esto viene como 'YYYY-MM-DD' (solo fecha)
   tipo_movimiento: "ENTRADA" | "SALIDA";
   cantidad: number;
   stock_resultante: number;
@@ -69,33 +69,47 @@ const MovimientosP = () => {
     try {
       const response = await fetch(`${API_URL}/api/movimientos`);
       const data = await response.json();
-      setMovimientos(data);
-      setMovimientosOriginales(data);
+      
+      // Ordenar por fecha más reciente primero
+      const datosOrdenados = data.sort((a: Movimiento, b: Movimiento) => 
+        new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
+      );
+      
+      setMovimientos(datosOrdenados);
+      setMovimientosOriginales(datosOrdenados);
+      
+      // Debug: mostrar fechas únicas
+      const fechasUnicas = [...new Set(data.map((m: Movimiento) => m.fecha))].sort();
+      console.log("Fechas disponibles en la base de datos:", fechasUnicas);
     } catch (error) {
       console.error("Error al cargar movimientos:", error);
     }
   };
 
-  // 📅 Filtrar por rango de fechas
+  // 📅 Filtrar por rango de fechas (CORREGIDO para tipo DATE)
   const filtrarPorFechas = () => {
     if (!fechaInicio || !fechaFin) {
       alert("⚠️ Debes seleccionar ambas fechas (inicio y fin)");
       return;
     }
 
-    const inicio = new Date(fechaInicio);
-    const fin = new Date(fechaFin);
+    // Para campos DATE, comparamos directamente las strings YYYY-MM-DD
+    const inicio = fechaInicio;
+    const fin = fechaFin;
 
     if (inicio > fin) {
       alert("⚠️ La fecha de inicio no puede ser mayor a la fecha fin");
       return;
     }
 
+    console.log(`Filtrando desde ${inicio} hasta ${fin}`);
+
     const filtrados = movimientosOriginales.filter((m) => {
-      const fechaMovimiento = new Date(m.fecha);
-      return fechaMovimiento >= inicio && fechaMovimiento <= fin;
+      // m.fecha ya viene en formato YYYY-MM-DD (tipo DATE de MySQL)
+      return m.fecha >= inicio && m.fecha <= fin;
     });
 
+    console.log(`Encontrados ${filtrados.length} movimientos en el rango`);
     setMovimientos(filtrados);
   };
 
@@ -107,15 +121,16 @@ const MovimientosP = () => {
     setMovimientos(movimientosOriginales);
   };
 
-  // 🗑️ Eliminar movimientos por rango de fechas
+  // 🗑️ Eliminar movimientos por rango de fechas (CORREGIDO para tipo DATE)
   const eliminarMovimientosPorFecha = async () => {
     if (!fechaInicio || !fechaFin) {
       alert("⚠️ Debes seleccionar ambas fechas (inicio y fin) para eliminar");
       return;
     }
 
-    const inicio = new Date(fechaInicio);
-    const fin = new Date(fechaFin);
+    // Para campos DATE, comparamos directamente las strings YYYY-MM-DD
+    const inicio = fechaInicio;
+    const fin = fechaFin;
 
     if (inicio > fin) {
       alert("⚠️ La fecha de inicio no puede ser mayor a la fecha fin");
@@ -123,14 +138,21 @@ const MovimientosP = () => {
     }
 
     const movimientosEnRango = movimientosOriginales.filter((m) => {
-      const fechaMovimiento = new Date(m.fecha);
-      return fechaMovimiento >= inicio && fechaMovimiento <= fin;
+      // m.fecha ya viene en formato YYYY-MM-DD (tipo DATE de MySQL)
+      return m.fecha >= inicio && m.fecha <= fin;
     });
 
     if (movimientosEnRango.length === 0) {
       alert("⚠️ No hay movimientos en el rango de fechas seleccionado");
       return;
     }
+
+    // Confirmación antes de eliminar
+    const confirmar = window.confirm(
+      `¿Estás seguro de que deseas eliminar ${movimientosEnRango.length} movimiento(s) desde ${fechaInicio} hasta ${fechaFin}? Esta acción no se puede deshacer.`
+    );
+
+    if (!confirmar) return;
 
     try {
       let eliminados = 0;
@@ -240,7 +262,7 @@ const MovimientosP = () => {
                     <tr key={m.id_movimiento}>
                       <td>{m.id_movimiento}</td>
                       <td>{m.nombre_producto}</td>
-                      {/* 👇 Muestra solo la fecha */}
+                      {/* Solo fecha (formato DATE) */}
                       <td>{new Date(m.fecha).toLocaleDateString("es-GT")}</td>
                       <td>
                         <span className={`texto-origen ${m.tipo_movimiento.toLowerCase()}`}>
