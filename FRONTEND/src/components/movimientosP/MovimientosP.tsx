@@ -23,44 +23,37 @@ const MovimientosP = () => {
   const [fechaFin, setFechaFin] = useState("");
   const [cargando, setCargando] = useState(false);
 
-  // 🔧 Función para normalizar fechas (convertir a formato YYYY-MM-DD)
+  // 🔧 Función para normalizar fechas
   const normalizarFecha = (fechaString: string): string => {
     if (!fechaString) return '';
-    
-    console.log("📅 Normalizando fecha:", fechaString);
     
     // Si ya está en formato YYYY-MM-DD, devolverlo tal cual
     if (/^\d{4}-\d{2}-\d{2}$/.test(fechaString)) {
       return fechaString;
     }
     
-    // Si tiene formato ISO (con Z o timezone), extraer solo la parte de la fecha
-    if (fechaString.includes('T')) {
-      const fechaParte = fechaString.split('T')[0];
-      console.log("🔄 Convertido de ISO a fecha simple:", fechaParte);
-      return fechaParte;
+    // Si tiene formato ISO (con Z), manejar correctamente la zona horaria
+    if (fechaString.includes('T') && fechaString.includes('Z')) {
+      const fecha = new Date(fechaString);
+      const year = fecha.getUTCFullYear();
+      const month = String(fecha.getUTCMonth() + 1).padStart(2, '0');
+      const day = String(fecha.getUTCDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
     }
     
-    // Para cualquier otro caso, usar Date y formatear
-    const fecha = new Date(fechaString);
-    const fechaNormalizada = fecha.toISOString().split('T')[0];
-    console.log("🔄 Convertido a fecha normalizada:", fechaNormalizada);
-    return fechaNormalizada;
+    // Si tiene formato ISO sin Z, extraer solo la parte de la fecha
+    if (fechaString.includes('T')) {
+      return fechaString.split('T')[0];
+    }
+    
+    return fechaString;
   };
 
-  // 🔧 Función para formatear fecha para mostrar (MANEJO CORRECTO DE ZONA HORARIA)
+  // 🔧 Función para formatear fecha para mostrar
   const formatearFechaParaMostrar = (fechaString: string): string => {
-    console.log("🎨 Formateando fecha para mostrar:", fechaString);
-    
-    // Primero normalizar la fecha
     const fechaNormalizada = normalizarFecha(fechaString);
-    
-    // Dividir en partes y formatear manualmente para evitar problemas de zona horaria
     const [year, month, day] = fechaNormalizada.split('-');
-    const fechaFormateada = `${day}/${month}/${year}`;
-    
-    console.log("🎨 Fecha formateada:", fechaFormateada);
-    return fechaFormateada;
+    return `${day}/${month}/${year}`;
   };
 
   useEffect(() => {
@@ -98,7 +91,6 @@ const MovimientosP = () => {
           stock.includes(busquedaLower)
         );
       } catch (error) {
-        console.error("Error al filtrar movimiento:", error);
         return false;
       }
     });
@@ -109,7 +101,6 @@ const MovimientosP = () => {
   const cargarMovimientos = async () => {
     try {
       setCargando(true);
-      console.log("🔄 Cargando movimientos desde:", `${API_URL}/api/movimientos`);
       
       const response = await fetch(`${API_URL}/api/movimientos`);
       
@@ -118,56 +109,29 @@ const MovimientosP = () => {
       }
       
       const data = await response.json();
-      
-      // Debug: mostrar el primer movimiento para ver el formato original
-      if (data.length > 0) {
-        console.log("🔍 Primer movimiento (formato original):", {
-          id: data[0].id_movimiento,
-          fechaOriginal: data[0].fecha,
-          tipo: typeof data[0].fecha
-        });
-      }
-      
+
       // Normalizar las fechas en los datos recibidos
-      const datosNormalizados = data.map((movimiento: Movimiento) => {
-        const fechaNormalizada = normalizarFecha(movimiento.fecha);
-        console.log(`📊 Movimiento ${movimiento.id_movimiento}: ${movimiento.fecha} -> ${fechaNormalizada}`);
-        return {
-          ...movimiento,
-          fecha: fechaNormalizada
-        };
-      });
-      
-      console.log("✅ Datos normalizados:", datosNormalizados.slice(0, 3)); // Mostrar solo primeros 3
-      
-      // Mostrar fechas únicas ordenadas (después de normalizar)
-      const fechasUnicas = [...new Set(datosNormalizados.map((m: Movimiento) => m.fecha))].sort();
-      console.log("📅 Fechas únicas en movimientos (normalizadas):", fechasUnicas);
-      
-      // Verificar específicamente el 29/10/2025
-      const movimientos29 = datosNormalizados.filter((m: Movimiento) => m.fecha === '2025-10-29');
-      console.log(`🔍 Movimientos del 2025-10-29: ${movimientos29.length}`, movimientos29.map(m => ({
-        id: m.id_movimiento,
-        fecha: m.fecha,
-        producto: m.nombre_producto
-      })));
+      const datosNormalizados = data.map((movimiento: Movimiento) => ({
+        ...movimiento,
+        fecha: normalizarFecha(movimiento.fecha)
+      }));
 
       // Ordenar por fecha más reciente primero
       const datosOrdenados = datosNormalizados.sort((a: Movimiento, b: Movimiento) => 
-        b.fecha.localeCompare(a.fecha) // Comparar como strings para evitar problemas de zona horaria
+        b.fecha.localeCompare(a.fecha)
       );
       
       setMovimientos(datosOrdenados);
       setMovimientosOriginales(datosOrdenados);
       
     } catch (error) {
-      console.error("❌ Error al cargar movimientos:", error);
+      console.error("Error al cargar movimientos:", error);
     } finally {
       setCargando(false);
     }
   };
 
-  // 📅 Filtrar por rango de fechas (USANDO EL ENDPOINT DEL BACKEND)
+  // 📅 Filtrar por rango de fechas
   const filtrarPorFechas = async () => {
     if (!fechaInicio || !fechaFin) {
       alert("⚠️ Debes seleccionar ambas fechas (inicio y fin)");
@@ -181,7 +145,6 @@ const MovimientosP = () => {
 
     try {
       setCargando(true);
-      console.log("🎯 Solicitando filtro al backend...", { fechaInicio, fechaFin });
 
       const response = await fetch(`${API_URL}/api/movimientos/filtrar`, {
         method: "POST",
@@ -206,13 +169,6 @@ const MovimientosP = () => {
         fecha: normalizarFecha(movimiento.fecha)
       }));
       
-      console.log(`✅ Filtro completado: ${datosNormalizados.length} movimientos encontrados`);
-      
-      // Debug: mostrar algunos movimientos filtrados
-      datosNormalizados.slice(0, 3).forEach(m => {
-        console.log(`📋 Movimiento filtrado: ID=${m.id_movimiento}, Fecha=${m.fecha}, Producto=${m.nombre_producto}`);
-      });
-      
       if (datosNormalizados.length === 0) {
         alert("No se encontraron movimientos en el rango de fechas seleccionado");
       }
@@ -220,7 +176,7 @@ const MovimientosP = () => {
       setMovimientos(datosNormalizados);
       
     } catch (error) {
-      console.error("❌ Error al filtrar movimientos:", error);
+      console.error("Error al filtrar movimientos:", error);
       alert("Error al filtrar movimientos");
     } finally {
       setCargando(false);
@@ -233,7 +189,6 @@ const MovimientosP = () => {
     setFechaInicio("");
     setFechaFin("");
     setMovimientos(movimientosOriginales);
-    console.log("🔄 Filtros limpiados");
   };
 
   // 🗑️ Eliminar movimientos por rango de fechas
@@ -243,7 +198,6 @@ const MovimientosP = () => {
       return;
     }
 
-    // Primero obtenemos los movimientos en el rango usando el filtro del backend
     try {
       setCargando(true);
       const response = await fetch(`${API_URL}/api/movimientos/filtrar`, {
@@ -263,7 +217,6 @@ const MovimientosP = () => {
 
       const data = await response.json();
       
-      // Normalizar las fechas
       const movimientosEnRango = data.map((movimiento: Movimiento) => ({
         ...movimiento,
         fecha: normalizarFecha(movimiento.fecha)
@@ -274,7 +227,6 @@ const MovimientosP = () => {
         return;
       }
 
-      // Confirmación antes de eliminar
       const confirmar = window.confirm(
         `¿Estás seguro de que deseas eliminar ${movimientosEnRango.length} movimiento(s) desde ${fechaInicio} hasta ${fechaFin}? Esta acción no se puede deshacer.`
       );
@@ -317,31 +269,6 @@ const MovimientosP = () => {
     <div className="movimientos-productos">
       <div className="movimientos-header">
         <h1>🔄 REGISTRO DE MOVIMIENTO DE PRODUCTOS</h1>
-        
-        {/* Botón de debug adicional */}
-        <button 
-          onClick={() => {
-            console.log("=== DEBUG COMPLETO ===");
-            console.log("Movimientos en estado:", movimientos.length);
-            console.log("Primeros 3 movimientos:", movimientos.slice(0, 3).map(m => ({
-              id: m.id_movimiento,
-              fecha: m.fecha,
-              fechaFormateada: formatearFechaParaMostrar(m.fecha),
-              producto: m.nombre_producto
-            })));
-          }}
-          style={{
-            background: '#ff6b6b',
-            color: 'white',
-            border: 'none',
-            padding: '5px 10px',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            marginLeft: '10px'
-          }}
-        >
-          🔍 Debug Fechas
-        </button>
       </div>
 
       <div className="movimientos-content">
@@ -446,14 +373,7 @@ const MovimientosP = () => {
                     <tr key={m.id_movimiento}>
                       <td>{m.id_movimiento}</td>
                       <td>{m.nombre_producto}</td>
-                      {/* Usar la función de formateo corregida */}
-                      <td>
-                        {formatearFechaParaMostrar(m.fecha)}
-                        <br />
-                        <small style={{color: '#666', fontSize: '0.7em'}}>
-                          (BD: {m.fecha})
-                        </small>
-                      </td>
+                      <td>{formatearFechaParaMostrar(m.fecha)}</td>
                       <td>
                         <span className={`texto-origen ${m.tipo_movimiento.toLowerCase()}`}>
                           {m.origen_movimiento}
