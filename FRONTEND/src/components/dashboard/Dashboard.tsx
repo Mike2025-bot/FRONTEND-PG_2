@@ -359,6 +359,9 @@ useEffect(() => {
         fechaLimite.setDate(ahora.getDate() - periodoGrafico);
       }
 
+      // ✅ Incluir todo el día final
+      fechaFinal.setDate(fechaFinal.getDate() + 1);
+
       // Filtrar ventas del periodo
       const ventasPeriodo = ventas.filter((venta: any) => {
         const fechaVenta = new Date(venta.fecha);
