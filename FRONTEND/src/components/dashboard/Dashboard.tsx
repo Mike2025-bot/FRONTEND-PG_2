@@ -39,12 +39,6 @@ interface ProductoVendido {
   total: number;
 }
 
-interface CategoriaVenta {
-  categoria: string;
-  total: number;
-  porcentaje: number;
-}
-
 const Dashboard = () => {
   const [ventasTotales, setVentasTotales] = useState<number>(0);
   const [totalVentas, setTotalVentas] = useState<number>(0);
@@ -60,7 +54,7 @@ const Dashboard = () => {
   const [fechaFin, setFechaFin] = useState<string>('');
   const [usarRangoPersonalizado, setUsarRangoPersonalizado] = useState<boolean>(false);
   const [topProductos, setTopProductos] = useState<ProductoVendido[]>([]);
-  const [ventasPorCategoria, setVentasPorCategoria] = useState<CategoriaVenta[]>([]);
+  //const [ventasPorCategoria, setVentasPorCategoria] = useState<CategoriaVenta[]>([]);
   const [barraHover, setBarraHover] = useState<number | null>(null);
   const [ventasMesAnterior, setVentasMesAnterior] = useState<number>(0);
 
@@ -278,7 +272,7 @@ const Dashboard = () => {
         // Convertir a array y ordenar por cantidad
         const topProductosArray = Object.values(productosMap)
           .sort((a, b) => b.cantidad - a.cantidad)
-          .slice(0, 5);
+          .slice(0, 25);
         
         setTopProductos(topProductosArray);
       } catch (error) {
@@ -292,50 +286,7 @@ const Dashboard = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Cargar ventas por categoría
-  useEffect(() => {
-    const cargarVentasPorCategoria = async () => {
-      try {
-        const response = await fetch(`${API_URL}/api/salidas/detalle-salidas`);
-        const detalles = await response.json();
-        
-        // Agrupar por categoría
-        const categoriasMap: { [key: string]: number } = {};
-        
-        detalles.forEach((detalle: any) => {
-          const categoria = detalle.nombre_categoria || 'Sin categoría';
-          const subtotal = parseFloat(detalle.subtotal || 0);
-          
-          if (!categoriasMap[categoria]) {
-            categoriasMap[categoria] = 0;
-          }
-          categoriasMap[categoria] += subtotal;
-        });
-        
-        // Calcular total y porcentajes
-        const totalVentas = Object.values(categoriasMap).reduce((sum, val) => sum + val, 0);
-        
-        const categoriasArray: CategoriaVenta[] = Object.entries(categoriasMap)
-          .map(([categoria, total]) => ({
-            categoria,
-            total,
-            porcentaje: totalVentas > 0 ? (total / totalVentas) * 100 : 0
-          }))
-          .sort((a, b) => b.total - a.total)
-          .slice(0, 5);
-        
-        setVentasPorCategoria(categoriasArray);
-      } catch (error) {
-        console.error('Error al cargar ventas por categoría:', error);
-      }
-    };
-
-    cargarVentasPorCategoria();
-    const interval = setInterval(cargarVentasPorCategoria, 30000);
-    
-    return () => clearInterval(interval);
-  }, []);
-
+ 
   // Cargar ventas por día para el gráfico
  // Cargar ventas por día para el gráfico
 useEffect(() => {
@@ -720,11 +671,11 @@ useEffect(() => {
         </div>
 
         {/* Gráficos adicionales */}
-        <div className="content-grid">
+        <div className="content-card full-width">
           {/* Top 5 Productos Más Vendidos */}
           <div className="content-card">
             <div className="card-header">
-              <h3>🏆 Top 5 Productos Más Vendidos</h3>
+              <h3>🏆 Top 25 Productos Más Vendidos</h3>
             </div>
             <div className="top-productos-chart">
               {topProductos.length > 0 ? (
@@ -755,35 +706,7 @@ useEffect(() => {
             </div>
           </div>
 
-          {/* Ventas por Categoría */}
-          <div className="content-card">
-            <div className="card-header">
-              <h3>📊 Ventas por Categoría</h3>
-            </div>
-            <div className="categorias-chart">
-              {ventasPorCategoria.length > 0 ? (
-                ventasPorCategoria.map((categoria, index) => {
-                  const colores = ['#667eea', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
-                  const color = colores[index % colores.length];
-                  
-                  return (
-                    <div key={index} className="categoria-item">
-                      <div className="categoria-info">
-                        <div className="categoria-color" style={{ backgroundColor: color }}></div>
-                        <span className="categoria-nombre">{categoria.categoria}</span>
-                      </div>
-                      <div className="categoria-stats">
-                        <span className="categoria-porcentaje">{categoria.porcentaje.toFixed(1)}%</span>
-                        <span className="categoria-total">Q{categoria.total.toFixed(2)}</span>
-                      </div>
-                    </div>
-                  );
-                })
-              ) : (
-                <p style={{ textAlign: 'center', color: '#6b7280' }}>No hay datos disponibles</p>
-              )}
-            </div>
-          </div>
+          
         </div>
       </div>
     </div>
