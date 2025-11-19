@@ -903,6 +903,7 @@ const VentasCaja = () => {
         total: totalVenta,
         efectivo: efectivo,
         cambio: cambio,
+        fecha_venta,
         productos: productosVenta.map(p => ({
           id_producto: p.id_producto,
           cantidad: p.cantidad,
