@@ -885,6 +885,17 @@ const VentasCaja = () => {
         nombreCajero = usuario.nombre_usuario || '';
       }
 
+      // Obtener fecha actual en zona horaria de Guatemala (UTC-6)
+      const ahora = new Date();
+      // Usar Intl.DateTimeFormat para obtener la fecha en zona horaria de Guatemala
+      const formatter = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'America/Guatemala',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+      const fecha_venta = formatter.format(ahora); // Formato YYYY-MM-DD
+      
       // Preparar datos de la venta
       const ventaData = {
         id_usuario: idUsuario,
