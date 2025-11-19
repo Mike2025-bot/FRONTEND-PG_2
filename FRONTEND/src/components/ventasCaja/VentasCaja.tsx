@@ -894,7 +894,7 @@ const VentasCaja = () => {
         month: '2-digit',
         day: '2-digit'
       });
-      //const fecha_venta = formatter.format(ahora); // Formato YYYY-MM-DD
+      const fecha_venta = formatter.format(ahora); // Formato YYYY-MM-DD
       
       // Preparar datos de la venta
       const ventaData = {
@@ -903,6 +903,7 @@ const VentasCaja = () => {
         total: totalVenta,
         efectivo: efectivo,
         cambio: cambio,
+        fecha_venta,
         productos: productosVenta.map(p => ({
           id_producto: p.id_producto,
           cantidad: p.cantidad,
